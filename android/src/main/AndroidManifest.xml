@@ -1,5 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.easj.capservice.capacitorbackgroundservice">
 
-  <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.easj.capservice.capacitorbackgroundservice">
-  </manifest>
-  
+    <application>
+        <service
+            android:name="com.easj.capservice.services.SignalRService"
+            android:enabled="true"
+            android:exported="true"></service>
+    </application>
+
+</manifest>

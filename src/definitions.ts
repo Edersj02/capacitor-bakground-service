@@ -8,4 +8,6 @@ declare module "@capacitor/core" {
 
 export interface CapBackground {
   echo(options: { value: string }): Promise<{value: string}>;
+  
+  startBackgroundService(): Promise<{}>;
 }
