@@ -37,7 +37,7 @@ public class SignalRService extends Service {
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 THREAD_PRIORITY_BACKGROUND);
 
-        Toast.show(this, "Service Start");
+        Toast.show(this.getBaseContext(), "Service Start");
 
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         serviceLooper = thread.getLooper();
@@ -58,7 +58,7 @@ public class SignalRService extends Service {
                 Log.d(SERVICE_NAME, "This is a Background service for Android");
             }
         } catch (Exception ex) {
-            Toast.show(this, "Unknown error: " + ex.getMessage());
+            Toast.show(this.getBaseContext(), "Unknown error: " + ex.getMessage());
         }
 
         return START_STICKY;
