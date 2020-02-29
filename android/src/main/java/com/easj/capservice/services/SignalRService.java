@@ -18,30 +18,11 @@ public class SignalRService extends Service {
 
     private static final String SERVICE_NAME = SignalRService.class.getName();
 
-    private NotificationManager mNM;
-    private int NOTIFICATION = 1000;
-
-    private Looper serviceLooper;
-    private ServiceHandler serviceHandler;
-
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-        @Override
-        public void handleMessage(Message message) {}
-    }
-
     @Override
     public void onCreate() {
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 THREAD_PRIORITY_BACKGROUND);
-
-        Toast.show(this.getBaseContext(), "Service Start");
-
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        serviceLooper = thread.getLooper();
-        serviceHandler = new ServiceHandler(serviceLooper);
+        Toast.show(this, "Service Start");
     }
 
     @Override
@@ -66,7 +47,6 @@ public class SignalRService extends Service {
 
     @Override
     public void onDestroy() {
-        mNM.cancel(NOTIFICATION);
         Toast.show(this, "Service Done");
     }
 }
