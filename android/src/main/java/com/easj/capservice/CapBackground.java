@@ -114,12 +114,12 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
             String packageName = context.getPackageName();
             PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
             if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                // intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
             } else {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setData(Uri.parse("package:" + packageName));
             }
-            activity.startActivity(intent);
+            // activity.startActivity(intent);
         }
     }
 
