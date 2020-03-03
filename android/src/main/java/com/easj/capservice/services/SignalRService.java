@@ -1,20 +1,23 @@
 package com.easj.capservice.services;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Process;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.getcapacitor.ui.Toast;
 
@@ -23,9 +26,14 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 public class SignalRService extends Service {
 
     private static final String SERVICE_NAME = SignalRService.class.getName();
+    private static final String CHANEL_ID = "com.easj.capservice";
 
+    private Location location;
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
+
+    private Context context;
+    private Activity activity;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -55,39 +63,43 @@ public class SignalRService extends Service {
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
         if (Build.VERSION.SDK_INT >= 26) {
-            String CHANNEL_ID = "my_channel_01";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
-
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("")
-                    .setContentText("").build();
+            createChanelIdNotifications();
+            Notification notification = new NotificationCompat.Builder(this, CHANEL_ID)
+                    .setContentTitle("Service in background")
+                    .setContentText("Running...").build();
 
             startForeground(1, notification);
         }
-        HandlerThread thread = new HandlerThread("ServiceStartArguments",
-                Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-
-        // Get the HandlerThread's Looper and use it for our Handler
-        serviceLooper = thread.getLooper();
-        serviceHandler = new ServiceHandler(serviceLooper);
+//        HandlerThread thread = new HandlerThread("ServiceStartArguments",
+//                Process.THREAD_PRIORITY_BACKGROUND);
+//        thread.start();
+//
+//        // Get the HandlerThread's Looper and use it for our Handler
+//        serviceLooper = thread.getLooper();
+//        serviceHandler = new ServiceHandler(serviceLooper);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.show(this, "service starting");
         Log.d(SERVICE_NAME, "Service -----");
-        // For each start request, send a message to start a job and deliver the
-        // start ID so we know which request we're stopping when we finish the job
-        Message msg = serviceHandler.obtainMessage();
-        msg.arg1 = startId;
-        serviceHandler.sendMessage(msg);
+        try {
+            if (intent != null) {
+                if (intent.getExtras() != null) {
+                    Bundle bundle = intent.getExtras();
+                    if (bundle.getParcelable("com.google.android.location.LOCATION") != null) {
+                        location = bundle.getParcelable("com.google.android.location.LOCATION");
+                        if (location != null) {
+                            Log.i(SERVICE_NAME, "onHandleIntent " + location.getLatitude() + ", " + location.getLongitude());
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Toast.show(this, "Unknown error: "+ex.getMessage());
+        }
 
-        // If we get killed, after returning from here, restart
+
         return START_STICKY;
     }
 
@@ -101,4 +113,24 @@ public class SignalRService extends Service {
     public void onDestroy() {
         Toast.show(this, "service done");
     }
+
+    private void createChanelIdNotifications(){
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Notifications App";
+            String description = "Background Service";
+            int importance = NotificationManager.IMPORTANCE_NONE;
+            NotificationChannel channel = new NotificationChannel(CHANEL_ID, name, importance);
+            channel.setDescription(description);
+            channel.setLightColor(Color.BLUE);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = this.context.getSystemService(NotificationManager.class);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
