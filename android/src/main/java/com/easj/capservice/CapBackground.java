@@ -193,21 +193,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
                 });
     }
 
-    @Override
-    protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
-        // super.handleOnActivityResult(requestCode, resultCode, data);
-        Log.d("RESULT PERMISSIONS", "Service -----");
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    startLocationUpdates();
-                    break;
-                case Activity.RESULT_CANCELED:
-                    break;
-            }
-        }
-    }
-
     private void manageDeniedPermission() {
 //        ActivityCompat.requestPermissions(
 //                activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -221,7 +206,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     @Override
     protected void handleRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.handleRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
+        if (requestCode == REQUEST_LOCATION) {
             startLocationUpdates();
         }
     }
