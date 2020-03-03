@@ -62,6 +62,7 @@ public class SignalRService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
+        context = this;
         if (Build.VERSION.SDK_INT >= 26) {
             createChanelIdNotifications();
             Notification notification = new NotificationCompat.Builder(this, CHANEL_ID)
