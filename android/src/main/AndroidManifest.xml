@@ -6,7 +6,9 @@
         <service
             android:name="com.easj.capservice.services.SignalRService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+
+        </service>
     </application>
 
 </manifest>

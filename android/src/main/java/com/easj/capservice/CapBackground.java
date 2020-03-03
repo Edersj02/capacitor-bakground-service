@@ -29,6 +29,7 @@ public class CapBackground extends Plugin {
         String value = call.getString("value");
 
         context = this.getContext();
+        activity = getActivity();
 
         JSObject ret = new JSObject();
         ret.put("key", "This is a test for Android");
@@ -40,14 +41,15 @@ public class CapBackground extends Plugin {
     @PluginMethod()
     public void startBackgroundService(PluginCall call) {
         context = this.getContext();
+        activity = getActivity();
         // activity = (Activity) this.getContext();
         createChanelIdNotifications();
         Intent intent = new Intent(context, SignalRService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
+            activity.startForegroundService(intent);
         } else {
-            context.startService(intent);
+            activity.startService(intent);
         }
         JSObject ret = new JSObject();
         ret.put("value", "Start Service");
