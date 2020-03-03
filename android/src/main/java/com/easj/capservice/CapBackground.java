@@ -43,7 +43,7 @@ public class CapBackground extends Plugin {
         context = this.getContext();
         activity = getActivity();
         // activity = (Activity) this.getContext();
-        createChanelIdNotifications();
+        // createChanelIdNotifications();
         Intent intent = new Intent(context, SignalRService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
