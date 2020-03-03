@@ -3,16 +3,12 @@ package com.easj.capservice;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -57,7 +53,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
-    private Location mLastLocation;
 
     // Códigos de petición
     private static final int REQUEST_LOCATION = 1;
@@ -86,18 +81,12 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         activity = getActivity();
         requestChangeBatteryOptimizations();
         if (networkStatus()) {
+            manageDeniedPermission();
             buildGoogleApiClient();
             createLocationRequest();
             buildLocationSettingsRequest();
             checkLocationSettings();
         }
-//        Intent intent = new Intent(context, SignalRService.class);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            activity.startForegroundService(intent);
-//        } else {
-//            activity.startService(intent);
-//        }
         JSObject ret = new JSObject();
         ret.put("value", "Start Service");
         call.resolve(ret);
@@ -118,8 +107,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
             } else {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setData(Uri.parse("package:" + packageName));
+                activity.startActivity(intent);
             }
-            // activity.startActivity(intent);
         }
     }
 
@@ -232,8 +221,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         } else {
             context.startService(intent);
         }
-        //activity.startService(intent);
-        // getLastLocation();
     }
 
     private boolean isLocationPermissionGranted() {

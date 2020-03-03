@@ -1,6 +1,5 @@
 package com.easj.capservice.services;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,19 +20,14 @@ import androidx.core.app.NotificationCompat;
 
 import com.getcapacitor.ui.Toast;
 
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-
 public class SignalRService extends Service {
 
     private static final String SERVICE_NAME = SignalRService.class.getName();
     private static final String CHANEL_ID = "com.easj.capservice";
 
     private Location location;
-    private Looper serviceLooper;
-    private ServiceHandler serviceHandler;
 
     private Context context;
-    private Activity activity;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -71,18 +65,11 @@ public class SignalRService extends Service {
 
             startForeground(1, notification);
         }
-//        HandlerThread thread = new HandlerThread("ServiceStartArguments",
-//                Process.THREAD_PRIORITY_BACKGROUND);
-//        thread.start();
-//
-//        // Get the HandlerThread's Looper and use it for our Handler
-//        serviceLooper = thread.getLooper();
-//        serviceHandler = new ServiceHandler(serviceLooper);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.show(this, "service starting");
+        // Toast.show(this, "service starting");
         Log.d(SERVICE_NAME, "Service -----");
         try {
             if (intent != null) {
@@ -99,8 +86,6 @@ public class SignalRService extends Service {
         } catch (Exception ex) {
             Toast.show(this, "Unknown error: "+ex.getMessage());
         }
-
-
         return START_STICKY;
     }
 
