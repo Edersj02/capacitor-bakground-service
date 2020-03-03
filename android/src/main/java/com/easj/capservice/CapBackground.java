@@ -228,9 +228,9 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
                 mLocationRequest, pendingIntent
         );
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity.startForegroundService(intent);
+            context.startForegroundService(intent);
         } else {
-            activity.startService(intent);
+            context.startService(intent);
         }
         //activity.startService(intent);
         // getLastLocation();
