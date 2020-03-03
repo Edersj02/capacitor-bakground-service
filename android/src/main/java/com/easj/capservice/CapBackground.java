@@ -84,7 +84,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     public void startBackgroundService(PluginCall call) {
         context = this.getContext();
         activity = getActivity();
-        requestChangeBatteryOptimizations();
+        // requestChangeBatteryOptimizations();
         if (networkStatus()) {
             buildGoogleApiClient();
             createLocationRequest();
