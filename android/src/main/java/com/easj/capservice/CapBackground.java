@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,7 +82,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         activity = getActivity();
         requestChangeBatteryOptimizations();
         if (networkStatus()) {
-            manageDeniedPermission();
+            // manageDeniedPermission();
             buildGoogleApiClient();
             createLocationRequest();
             buildLocationSettingsRequest();
@@ -194,7 +195,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
     @Override
     protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
-        super.handleOnActivityResult(requestCode, resultCode, data);
+        // super.handleOnActivityResult(requestCode, resultCode, data);
+        Log.d("RESULT PERMISSIONS", "Service -----");
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
@@ -206,7 +208,23 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         }
     }
 
+    private void manageDeniedPermission() {
+//        ActivityCompat.requestPermissions(
+//                activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                REQUEST_LOCATION);
+//        startActivityForResult();
+        pluginRequestPermissions(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, REQUEST_LOCATION);
+    }
 
+    @Override
+    protected void handleRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.handleRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            startLocationUpdates();
+        }
+    }
 
     private void startLocationUpdates() {
         Intent intent = new Intent(context, SignalRService.class);
@@ -228,12 +246,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         return permission == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void manageDeniedPermission() {
-        ActivityCompat.requestPermissions(
-                activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_LOCATION);
     }
 
     @Override
