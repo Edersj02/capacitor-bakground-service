@@ -35,7 +35,7 @@ public class TrackerPreferences implements ITrackerPreferences {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt(DRIVER_ID, data.getDriverId());
             editor.putString(TOKEN, data.getToken());
-            editor.putString(URL, data.getToken());
+            editor.putString(URL, data.getUrl());
             editor.apply();
         }
     }
