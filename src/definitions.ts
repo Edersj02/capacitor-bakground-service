@@ -7,10 +7,5 @@ declare module "@capacitor/core" {
 }
 
 export interface CapBackground {
-  startBackgroundService(options: SessionData): Promise<{}>;
-}
-
-export interface SessionData {
-  driverId: number;
-  token: String;
+  startBackgroundService(options: {driverId: string, token: string}): Promise<{}>;
 }
