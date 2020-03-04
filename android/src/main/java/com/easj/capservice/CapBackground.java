@@ -43,9 +43,15 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-@NativePlugin()
+@NativePlugin(
+    permissions={
+            Manifest.permission.ACCESS_FINE_LOCATION
+    }
+)
 public class CapBackground extends Plugin implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
+
+    private static final String CLASS_NAME = CapBackground.class.getName();
 
     private Context context;
     private Activity activity;
@@ -204,6 +210,15 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     @Override
     protected void handleRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.handleRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(CLASS_NAME, requestCode + "");
+
+        Log.d(CLASS_NAME, "handling request perms result");
+        PluginCall savedCall = getSavedCall();
+        if (savedCall == null) {
+            Log.d(CLASS_NAME, "No stored plugin call for permissions request result");
+            return;
+        }
+
         if (requestCode == REQUEST_LOCATION) {
             startLocationUpdates();
         }
