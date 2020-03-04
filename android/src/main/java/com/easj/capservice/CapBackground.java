@@ -43,6 +43,9 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 @NativePlugin(
     permissions={
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -68,6 +71,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final long UPDATE_INTERVAL = 1000;
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
+    Timer timer = new Timer();
+
 //    @PluginMethod()
 //    public void echo(PluginCall call) {
 //        String value = call.getString("value");
@@ -88,11 +93,12 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         activity = getActivity();
         requestChangeBatteryOptimizations();
         if (networkStatus()) {
-            manageDeniedPermission();
+            // manageDeniedPermission();
             buildGoogleApiClient();
             createLocationRequest();
             buildLocationSettingsRequest();
             checkLocationSettings();
+            startLocationsTimer();
         }
         JSObject ret = new JSObject();
         ret.put("value", "Start Service");
@@ -200,11 +206,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private void manageDeniedPermission() {
-//        ActivityCompat.requestPermissions(
-//                activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                REQUEST_LOCATION);
-//        startActivityForResult();
-//        pluginRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
+        pluginRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
     }
 
     @Override
@@ -276,5 +278,18 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.show(context,"Code connection error:" + connectionResult.getErrorCode());
+    }
+
+    private void startLocationsTimer() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(CLASS_NAME, "Init timer locations");
+                startLocationUpdates();
+                timer.cancel();
+                Log.d(CLASS_NAME, "Stop timer locations");
+            }
+        };
+        timer.schedule(task, 60000L, 60000L);
     }
 }
