@@ -301,6 +301,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
                 Log.d(CLASS_NAME, "Stop timer locations");
             }
         };
-        timer.schedule(task, 1000L, 60000L);
+        timer.schedule(task, 10000L, 60000L);
     }
 }
