@@ -204,12 +204,12 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 //                activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 //                REQUEST_LOCATION);
 //        startActivityForResult();
-        pluginRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
+//        pluginRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
     }
 
     @Override
     protected void handleRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.handleRequestPermissionsResult(requestCode, permissions, grantResults);
+        // super.handleRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(CLASS_NAME, requestCode + "");
 
         Log.d(CLASS_NAME, "handling request perms result");
