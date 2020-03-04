@@ -62,19 +62,19 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final long UPDATE_INTERVAL = 1000;
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
-    @PluginMethod()
-    public void echo(PluginCall call) {
-        String value = call.getString("value");
-
-        context = this.getContext();
-        activity = getActivity();
-
-        JSObject ret = new JSObject();
-        ret.put("key", "This is a test for Android");
-        ret.put("value", value);
-        Toast.show(context, value + " - " + ret.getString("key"));
-        call.success(ret);
-    }
+//    @PluginMethod()
+//    public void echo(PluginCall call) {
+//        String value = call.getString("value");
+//
+//        context = this.getContext();
+//        activity = getActivity();
+//
+//        JSObject ret = new JSObject();
+//        ret.put("key", "This is a test for Android");
+//        ret.put("value", value);
+//        Toast.show(context, value + " - " + ret.getString("key"));
+//        call.success(ret);
+//    }
 
     @PluginMethod()
     public void startBackgroundService(PluginCall call) {
@@ -198,9 +198,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 //                activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 //                REQUEST_LOCATION);
 //        startActivityForResult();
-        pluginRequestPermissions(new String[] {
-                Manifest.permission.ACCESS_FINE_LOCATION
-        }, REQUEST_LOCATION);
+        pluginRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
     }
 
     @Override
