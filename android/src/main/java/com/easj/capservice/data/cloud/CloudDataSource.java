@@ -24,22 +24,23 @@ public class CloudDataSource implements ICloudDataSource {
     private Retrofit restAdapter;
     private RestService restClient;
 
-    public CloudDataSource() {
+    public CloudDataSource(String url) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClient.addInterceptor(logging);
         restAdapter = new Retrofit.Builder()
-                .baseUrl(RestService.URL)
+                // .baseUrl(RestService.URL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build();
         restClient = restAdapter.create(RestService.class);
     }
 
-    public static CloudDataSource getInstance() {
+    public static CloudDataSource getInstance(String url) {
         if (INSTANCE == null) {
-            INSTANCE = new CloudDataSource();
+            INSTANCE = new CloudDataSource(url);
         }
         return INSTANCE;
     }

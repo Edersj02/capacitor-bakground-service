@@ -29,9 +29,9 @@ import com.getcapacitor.ui.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SignalRService extends Service {
+public class TrackerService extends Service {
 
-    private static final String SERVICE_NAME = SignalRService.class.getName();
+    private static final String SERVICE_NAME = TrackerService.class.getName();
     private static final String CHANEL_ID = "com.easj.capservice";
 
     private ICloudDataSource dataSource;
@@ -74,10 +74,10 @@ public class SignalRService extends Service {
         // background priority so CPU-intensive work doesn't disrupt our UI.
         TrackerPreferences preferences;
         context = this;
-        dataSource = CloudDataSource.getInstance();
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
             sessionData = preferences.getSessionData();
+            dataSource = CloudDataSource.getInstance(sessionData.getUrl());
         }
         if (Build.VERSION.SDK_INT >= 26) {
             createChanelIdNotifications();

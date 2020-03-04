@@ -6,13 +6,16 @@ public class SessionData {
 
     private String token;
 
+    private String url;
+
     public SessionData() {
         super();
     }
 
-    public SessionData(int driverId, String token) {
+    public SessionData(int driverId, String token, String url) {
         this.driverId = driverId;
         this.token = token;
+        this.url = url;
     }
 
     public int getDriverId() {
@@ -29,5 +32,13 @@ public class SessionData {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -12,7 +12,7 @@
 
     <application>
         <service
-            android:name="com.easj.capservice.services.SignalRService"
+            android:name="com.easj.capservice.services.TrackerService"
             android:enabled="true"
             android:exported="true">
 

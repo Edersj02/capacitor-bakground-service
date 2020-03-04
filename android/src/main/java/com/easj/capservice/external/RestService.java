@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 
 public interface RestService {
 
-    String URL = "https://mshuttleapidev.trip2.com/REST/";
+    // String URL = "https://mshuttleapidev.trip2.com/REST/";
 
     @POST("Trip2Driver/Location")
     Call<ResponseMessage> sendLocationTracker(

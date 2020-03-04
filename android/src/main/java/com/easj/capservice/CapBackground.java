@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,7 +26,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.easj.capservice.data.preferences.ITrackerPreferences;
 import com.easj.capservice.data.preferences.TrackerPreferences;
 import com.easj.capservice.entities.SessionData;
-import com.easj.capservice.services.SignalRService;
+import com.easj.capservice.services.TrackerService;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
@@ -99,8 +98,10 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         requestChangeBatteryOptimizations();
         int id = Integer.parseInt(call.getString("diverid"));
         String token = call.getString("token");
+        String url = call.getString("url");
         sessionData.setDriverId(id);
         sessionData.setToken(token);
+        sessionData.setUrl(url);
         preferences.save(sessionData);
         if (networkStatus()) {
             // manageDeniedPermission();
@@ -245,7 +246,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private void startLocationUpdates() {
-        Intent intent = new Intent(context, SignalRService.class);
+        Intent intent = new Intent(context, TrackerService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
