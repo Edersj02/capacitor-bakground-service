@@ -24,6 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.easj.capservice.data.preferences.ITrackerPreferences;
+import com.easj.capservice.data.preferences.TrackerPreferences;
+import com.easj.capservice.entities.SessionData;
 import com.easj.capservice.services.SignalRService;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
@@ -71,7 +74,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final long UPDATE_INTERVAL = 1000;
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
-    Timer timer = new Timer();
+    private Timer timer = new Timer();
 
 //    @PluginMethod()
 //    public void echo(PluginCall call) {
@@ -91,7 +94,12 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     public void startBackgroundService(PluginCall call) {
         context = this.getContext();
         activity = getActivity();
+        ITrackerPreferences preferences = TrackerPreferences.getInstance(context);
+        SessionData sessionData = new SessionData();
         requestChangeBatteryOptimizations();
+        sessionData.setDriverId(call.getInt("driverId"));
+        sessionData.setToken(call.getString("token"));
+        preferences.save(sessionData);
         if (networkStatus()) {
             // manageDeniedPermission();
             buildGoogleApiClient();

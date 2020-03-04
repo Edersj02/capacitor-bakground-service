@@ -14,20 +14,36 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.easj.capservice.data.cloud.CloudDataSource;
+import com.easj.capservice.data.cloud.ICloudDataSource;
+import com.easj.capservice.data.preferences.TrackerPreferences;
+import com.easj.capservice.entities.SendLocation;
+import com.easj.capservice.entities.SessionData;
 import com.getcapacitor.ui.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SignalRService extends Service {
 
     private static final String SERVICE_NAME = SignalRService.class.getName();
     private static final String CHANEL_ID = "com.easj.capservice";
 
+    private ICloudDataSource dataSource;
+    private SendLocation sendLocation;
+    private SessionData sessionData;
+
     private Location location;
 
     private Context context;
+
+    private Timer timer = new Timer();
+    final Handler handler = new Handler();
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -56,7 +72,13 @@ public class SignalRService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
+        TrackerPreferences preferences;
         context = this;
+        dataSource = CloudDataSource.getInstance();
+        preferences = TrackerPreferences.getInstance(getApplicationContext());
+        if (preferences != null) {
+            sessionData = preferences.getSessionData();
+        }
         if (Build.VERSION.SDK_INT >= 26) {
             createChanelIdNotifications();
             Notification notification = new NotificationCompat.Builder(this, CHANEL_ID)
@@ -65,6 +87,7 @@ public class SignalRService extends Service {
 
             startForeground(1, notification);
         }
+        sentLocationTracker();
     }
 
     @Override
@@ -117,6 +140,43 @@ public class SignalRService extends Service {
             assert notificationManager != null;
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    private void sentLocationTracker() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(SERVICE_NAME, "Init timer locations");
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (location != null) {
+                                sendLocation = new SendLocation();
+                                sendLocation.setDriverId(sessionData.getDriverId());
+                                sendLocation.setLatitude(location.getLatitude());
+                                sendLocation.setLongitude(location.getLongitude());
+                                sendLocation.setSpeed(location.getSpeed());
+                                dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
+                            }
+                        } catch (Exception ex) {
+                            Log.d(SERVICE_NAME, "Error timer: " + ex.getMessage());
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(task, 60000L, 60000L);
+    }
+
+    /**
+     * enabledMockLocation
+     * @return true if mock location is enabled, false if is not enabled
+     */
+    private boolean enabledMockLocation(Location location) {
+        Log.d("MOCK_LOCATION", Settings.Secure.getString(getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION));
+        return Settings.Secure.getString(getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION)
+                .equals("1");
     }
 
 }
