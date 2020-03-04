@@ -88,7 +88,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         activity = getActivity();
         requestChangeBatteryOptimizations();
         if (networkStatus()) {
-            // manageDeniedPermission();
+            manageDeniedPermission();
             buildGoogleApiClient();
             createLocationRequest();
             buildLocationSettingsRequest();
@@ -217,6 +217,14 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         if (savedCall == null) {
             Log.d(CLASS_NAME, "No stored plugin call for permissions request result");
             return;
+        }
+
+        for(int result : grantResults) {
+            if (result == PackageManager.PERMISSION_DENIED) {
+                savedCall.error("User denied permission");
+                Log.d(CLASS_NAME, "User denied permission");
+                return;
+            }
         }
 
         if (requestCode == REQUEST_LOCATION) {
