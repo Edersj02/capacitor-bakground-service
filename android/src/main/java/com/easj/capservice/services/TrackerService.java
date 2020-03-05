@@ -67,7 +67,10 @@ public class TrackerService extends Service {
 
             startForeground(1, notification);
         }
-        sentLocationTracker();
+        if (timer == null) {
+            sentLocationTracker();
+        }
+
     }
 
     @Override
