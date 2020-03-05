@@ -73,7 +73,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_CHECK_SETTINGS = 2;
 
-    private static final long UPDATE_INTERVAL = 1000;
+    private static final long UPDATE_INTERVAL = 2000;
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
     private Timer timer = new Timer();
@@ -175,12 +175,14 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .enableAutoManage((FragmentActivity) activity, this)
-                .build();
+        if (!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient = new GoogleApiClient.Builder(context)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .enableAutoManage((FragmentActivity) activity, this)
+                    .build();
+        }
     }
 
     private void createLocationRequest() {
@@ -278,6 +280,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private void stopLocationUpdates() {
+        mGoogleApiClient.disconnect();
         Intent intent = new Intent(context, TrackerService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);

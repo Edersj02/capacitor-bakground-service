@@ -166,7 +166,7 @@ public class TrackerService extends Service {
                 });
             }
         };
-        timer.schedule(task, 60000L, 60000L);
+        timer.schedule(task, 4000L, 60000L);
     }
 
     /**
