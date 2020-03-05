@@ -47,27 +47,6 @@ public class TrackerService extends Service {
     private Timer timer = new Timer();
     final Handler handler = new Handler();
 
-    // Handler that receives messages from the thread
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-        @Override
-        public void handleMessage(Message msg) {
-            // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 5 seconds.
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // Restore interrupt status.
-                Thread.currentThread().interrupt();
-            }
-            // Stop the service using the startId, so that we don't stop
-            // the service in the middle of handling another job
-            stopSelf(msg.arg1);
-        }
-    }
-
     @Override
     public void onCreate() {
         // Start up the thread running the service. Note that we create a
@@ -111,9 +90,12 @@ public class TrackerService extends Service {
                 }
                 if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
-                    stopSelf();
-                    stopForeground(true);
-                    // return START_NOT_STICKY;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        stopForeground(true);
+                    } else {
+                        stopSelf();
+                    }
+                    return START_NOT_STICKY;
                 }
             }
         } catch (Exception ex) {
@@ -130,6 +112,7 @@ public class TrackerService extends Service {
 
     @Override
     public void onDestroy() {
+        stopSelf();
         Toast.show(this, "service done");
     }
 
@@ -164,13 +147,17 @@ public class TrackerService extends Service {
                             if (location != null) {
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
-                                sendLocation = new SendLocation();
-                                sendLocation.setDriverId(sessionData.getDriverId());
-                                sendLocation.setLatitude(location.getLatitude());
-                                sendLocation.setLongitude(location.getLongitude());
-                                sendLocation.setSpeed(location.getSpeed());
-                                Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
-                                dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
+                                if (!sessionData.getToken().equals("")) {
+                                    sendLocation = new SendLocation();
+                                    sendLocation.setDriverId(sessionData.getDriverId());
+                                    sendLocation.setLatitude(location.getLatitude());
+                                    sendLocation.setLongitude(location.getLongitude());
+                                    sendLocation.setSpeed(location.getSpeed());
+                                    Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
+                                    dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
+                                } else {
+                                    Log.d(SERVICE_NAME, "No Send Location ----");
+                                }
                             }
                         } catch (Exception ex) {
                             Log.d(SERVICE_NAME, "Error timer: " + ex.getMessage());

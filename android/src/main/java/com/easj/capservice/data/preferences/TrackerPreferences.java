@@ -42,6 +42,12 @@ public class TrackerPreferences implements ITrackerPreferences {
     }
 
     @Override
+    public void clearData() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+    }
+
+    @Override
     public SessionData getSessionData() {
         return new SessionData(
                 preferences.getInt(DRIVER_ID, 0),

@@ -67,6 +67,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
 
+    private ITrackerPreferences preferences;
+
     // Códigos de petición
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_CHECK_SETTINGS = 2;
@@ -96,7 +98,13 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         activity = getActivity();
         Intent intent = new Intent(context, TrackerService.class);
         intent.setAction(Constans.STOP_FOREGROUND_ACTION);
-        context.stopService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+        preferences = TrackerPreferences.getInstance(context);
+        preferences.clearData();
         JSObject ret = new JSObject();
         ret.put("value", "Stop Service");
         call.resolve(ret);
@@ -106,7 +114,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     public void startBackgroundService(PluginCall call) {
         context = this.getContext();
         activity = getActivity();
-        ITrackerPreferences preferences = TrackerPreferences.getInstance(context);
+        preferences = TrackerPreferences.getInstance(context);
         SessionData sessionData = new SessionData();
         requestChangeBatteryOptimizations();
         int id = Integer.parseInt(call.getString("diverid"));

@@ -6,5 +6,7 @@ public interface ITrackerPreferences {
 
     void save(SessionData data);
 
+    void clearData();
+
     SessionData getSessionData();
 }
