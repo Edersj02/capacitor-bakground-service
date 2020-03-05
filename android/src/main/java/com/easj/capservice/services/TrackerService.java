@@ -34,6 +34,7 @@ public class TrackerService extends Service {
     private static final String SERVICE_NAME = TrackerService.class.getName();
     private static final String CHANEL_ID = "com.easj.capservice";
 
+    private TrackerPreferences preferences;
     private ICloudDataSource dataSource;
     private SendLocation sendLocation;
     private SessionData sessionData;
@@ -72,7 +73,6 @@ public class TrackerService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
-        TrackerPreferences preferences;
         context = this;
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
@@ -152,6 +152,8 @@ public class TrackerService extends Service {
                     public void run() {
                         try {
                             if (location != null) {
+                                preferences = TrackerPreferences.getInstance(getApplicationContext());
+                                sessionData = preferences.getSessionData();
                                 sendLocation = new SendLocation();
                                 sendLocation.setDriverId(sessionData.getDriverId());
                                 sendLocation.setLatitude(location.getLatitude());
