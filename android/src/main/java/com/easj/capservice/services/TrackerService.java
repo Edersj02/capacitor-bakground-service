@@ -147,13 +147,13 @@ public class TrackerService extends Service {
                             if (location != null) {
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
+                                Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                                 if (!sessionData.getToken().equals("")) {
                                     sendLocation = new SendLocation();
                                     sendLocation.setDriverId(sessionData.getDriverId());
                                     sendLocation.setLatitude(location.getLatitude());
                                     sendLocation.setLongitude(location.getLongitude());
                                     sendLocation.setSpeed(location.getSpeed());
-                                    Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                                     dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
                                 } else {
                                     Log.d(SERVICE_NAME, "No Send Location ----");

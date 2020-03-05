@@ -96,15 +96,9 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     public void stopBackgroundService(PluginCall call) {
         context = this.getContext();
         activity = getActivity();
-        Intent intent = new Intent(context, TrackerService.class);
-        intent.setAction(Constans.STOP_FOREGROUND_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
         preferences = TrackerPreferences.getInstance(context);
         preferences.clearData();
+        stopLocationUpdates();
         JSObject ret = new JSObject();
         ret.put("value", "Stop Service");
         call.resolve(ret);
@@ -276,6 +270,22 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(
                 mLocationRequest, pendingIntent
         );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
+
+    private void stopLocationUpdates() {
+        Intent intent = new Intent(context, TrackerService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        LocationServices.getFusedLocationProviderClient(context)
+                .removeLocationUpdates(pendingIntent);
+
+        intent.setAction(Constans.STOP_FOREGROUND_ACTION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
