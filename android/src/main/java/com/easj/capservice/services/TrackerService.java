@@ -44,6 +44,8 @@ public class TrackerService extends Service {
 
     private Context context;
 
+    private int STICKY = 0;
+
     private Timer timer = new Timer();
     final Handler handler = new Handler();
 
@@ -86,6 +88,7 @@ public class TrackerService extends Service {
                                 Log.i(SERVICE_NAME, "onHandleIntent " + location.getLatitude() + ", " + location.getLongitude());
                             }
                         }
+                        STICKY = START_STICKY;
                     }
                 }
                 if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
@@ -95,13 +98,13 @@ public class TrackerService extends Service {
                     } else {
                         stopSelf();
                     }
-                    return START_NOT_STICKY;
+                    STICKY = START_NOT_STICKY;
                 }
             }
         } catch (Exception ex) {
             Toast.show(this, "Unknown error: "+ex.getMessage());
         }
-        return START_STICKY;
+        return STICKY;
     }
 
     @Override
