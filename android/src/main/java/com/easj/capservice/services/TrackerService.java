@@ -92,6 +92,7 @@ public class TrackerService extends Service {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         stopForeground(true);
+                        stopSelf();
                     } else {
                         stopSelf();
                     }
