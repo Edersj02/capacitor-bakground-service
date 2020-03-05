@@ -175,7 +175,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private synchronized void buildGoogleApiClient() {
-        if (!mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
