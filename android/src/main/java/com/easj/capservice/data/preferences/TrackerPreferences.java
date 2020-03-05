@@ -44,7 +44,8 @@ public class TrackerPreferences implements ITrackerPreferences {
     @Override
     public void clearData() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.clear().apply();
+        editor.putString(TOKEN, "");
+        editor.apply();
     }
 
     @Override
