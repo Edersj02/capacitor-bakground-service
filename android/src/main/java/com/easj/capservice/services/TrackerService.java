@@ -99,22 +99,21 @@ public class TrackerService extends Service {
             if (intent != null) {
                 if (intent.getAction().equals(Constans.START_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- START_FOREGROUND_ACTION");
+                    if (intent.getExtras() != null) {
+                        Bundle bundle = intent.getExtras();
+                        if (bundle.getParcelable("com.google.android.location.LOCATION") != null) {
+                            location = bundle.getParcelable("com.google.android.location.LOCATION");
+                            if (location != null) {
+                                Log.i(SERVICE_NAME, "onHandleIntent " + location.getLatitude() + ", " + location.getLongitude());
+                            }
+                        }
+                    }
                 }
                 if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
-                    stopForeground(true);
-                    stopService(intent);
                     stopSelf();
-                    return START_NOT_STICKY;
-                }
-                if (intent.getExtras() != null) {
-                    Bundle bundle = intent.getExtras();
-                    if (bundle.getParcelable("com.google.android.location.LOCATION") != null) {
-                        location = bundle.getParcelable("com.google.android.location.LOCATION");
-                        if (location != null) {
-                            Log.i(SERVICE_NAME, "onHandleIntent " + location.getLatitude() + ", " + location.getLongitude());
-                        }
-                    }
+                    stopForeground(true);
+                    // return START_NOT_STICKY;
                 }
             }
         } catch (Exception ex) {

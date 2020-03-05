@@ -96,7 +96,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         activity = getActivity();
         Intent intent = new Intent(context, TrackerService.class);
         intent.setAction(Constans.STOP_FOREGROUND_ACTION);
-        context.startService(intent);
+        context.stopService(intent);
         JSObject ret = new JSObject();
         ret.put("value", "Stop Service");
         call.resolve(ret);
