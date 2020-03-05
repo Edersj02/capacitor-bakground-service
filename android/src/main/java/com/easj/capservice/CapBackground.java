@@ -66,7 +66,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
-    private PendingIntent pendingIntent;
 
     private ITrackerPreferences preferences;
 
@@ -267,7 +266,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private void startLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
         intent.setAction(Constans.START_FOREGROUND_ACTION);
-        pendingIntent = PendingIntent.getService(context, 0,
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(
