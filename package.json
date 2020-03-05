@@ -1,6 +1,6 @@
 {
   "name": "capacitor-background-service",
-  "version": "1.3.31",
+  "version": "1.3.32",
   "description": "Servicios en segundo plano",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
