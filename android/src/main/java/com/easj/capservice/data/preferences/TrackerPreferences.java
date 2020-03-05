@@ -33,6 +33,7 @@ public class TrackerPreferences implements ITrackerPreferences {
     public void save(SessionData data) {
         if (data != null) {
             SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
             editor.putInt(DRIVER_ID, data.getDriverId());
             editor.putString(TOKEN, data.getToken());
             editor.putString(URL, data.getUrl());

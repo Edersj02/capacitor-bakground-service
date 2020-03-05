@@ -102,6 +102,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         sessionData.setDriverId(id);
         sessionData.setToken(token);
         sessionData.setUrl(url);
+        Log.d(CLASS_NAME, "Token -----" + sessionData.getToken());
         preferences.save(sessionData);
         if (networkStatus()) {
             // manageDeniedPermission();

@@ -157,6 +157,7 @@ public class TrackerService extends Service {
                                 sendLocation.setLatitude(location.getLatitude());
                                 sendLocation.setLongitude(location.getLongitude());
                                 sendLocation.setSpeed(location.getSpeed());
+                                Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                                 dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
                             }
                         } catch (Exception ex) {
