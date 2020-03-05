@@ -44,7 +44,7 @@ public class TrackerService extends Service {
 
     private Context context;
 
-    private Timer timer = new Timer();
+    private Timer timer;
     final Handler handler = new Handler();
 
     @Override
@@ -68,6 +68,7 @@ public class TrackerService extends Service {
             startForeground(1, notification);
         }
         if (timer == null) {
+            timer = new Timer();
             sentLocationTracker();
         }
 
