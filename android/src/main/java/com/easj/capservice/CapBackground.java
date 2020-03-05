@@ -282,8 +282,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
     private void stopLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
-//        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
-//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         LocationServices.getFusedLocationProviderClient(context)
                 .removeLocationUpdates(pendingIntent);
