@@ -44,7 +44,7 @@ public class TrackerService extends Service {
 
     private Context context;
 
-    private int STICKY = 0;
+    private int STICKY = START_STICKY;
 
     private Timer timer = new Timer();
     final Handler handler = new Handler();
