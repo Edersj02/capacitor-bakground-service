@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.easj.capservice.data.preferences.ITrackerPreferences;
 import com.easj.capservice.data.preferences.TrackerPreferences;
 import com.easj.capservice.entities.SessionData;
+import com.easj.capservice.constans.Constans;
 import com.easj.capservice.services.TrackerService;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
@@ -94,7 +95,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         context = this.getContext();
         activity = getActivity();
         Intent intent = new Intent(context, TrackerService.class);
-        context.stopService(intent);
+        intent.setAction(Constans.STOP_FOREGROUND_ACTION);
+        context.startService(intent);
         JSObject ret = new JSObject();
         ret.put("value", "Stop Service");
         call.resolve(ret);
@@ -259,6 +261,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
     private void startLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
+        intent.setAction(Constans.START_FOREGROUND_ACTION);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

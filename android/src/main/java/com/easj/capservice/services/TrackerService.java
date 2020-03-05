@@ -24,6 +24,7 @@ import com.easj.capservice.data.cloud.ICloudDataSource;
 import com.easj.capservice.data.preferences.TrackerPreferences;
 import com.easj.capservice.entities.SendLocation;
 import com.easj.capservice.entities.SessionData;
+import com.easj.capservice.constans.Constans;
 import com.getcapacitor.ui.Toast;
 
 import java.util.Timer;
@@ -96,6 +97,15 @@ public class TrackerService extends Service {
         Log.d(SERVICE_NAME, "Service -----");
         try {
             if (intent != null) {
+                if (intent.getAction().equals(Constans.START_FOREGROUND_ACTION)) {
+                    Log.d(SERVICE_NAME, "Service ----- START_FOREGROUND_ACTION");
+                }
+                if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
+                    Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
+                    stopForeground(true);
+                    stopSelf();
+                    return START_NOT_STICKY;
+                }
                 if (intent.getExtras() != null) {
                     Bundle bundle = intent.getExtras();
                     if (bundle.getParcelable("com.google.android.location.LOCATION") != null) {
