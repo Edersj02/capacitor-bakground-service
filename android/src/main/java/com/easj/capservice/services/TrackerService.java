@@ -103,7 +103,9 @@ public class TrackerService extends Service {
                 if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
                     stopForeground(true);
+                    stopService(intent);
                     stopSelf();
+                    return START_NOT_STICKY;
                 }
                 if (intent.getExtras() != null) {
                     Bundle bundle = intent.getExtras();
