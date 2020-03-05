@@ -90,6 +90,17 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 //    }
 
     @PluginMethod()
+    public void stopBackgroundService(PluginCall call) {
+        context = this.getContext();
+        activity = getActivity();
+        Intent intent = new Intent(context, TrackerService.class);
+        context.stopService(intent);
+        JSObject ret = new JSObject();
+        ret.put("value", "Stop Service");
+        call.resolve(ret);
+    }
+
+    @PluginMethod()
     public void startBackgroundService(PluginCall call) {
         context = this.getContext();
         activity = getActivity();
