@@ -66,6 +66,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
+    private PendingIntent pendingIntent;
 
     private ITrackerPreferences preferences;
 
@@ -266,7 +267,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private void startLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
         intent.setAction(Constans.START_FOREGROUND_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+        pendingIntent = PendingIntent.getService(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(
@@ -281,8 +282,8 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
     private void stopLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         LocationServices.getFusedLocationProviderClient(context)
                 .removeLocationUpdates(pendingIntent);
@@ -297,6 +298,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         mGoogleApiClient = null;
         mLocationSettingsRequest = null;
         mLocationRequest = null;
+        pendingIntent = null;
     }
 
     private boolean isLocationPermissionGranted() {
