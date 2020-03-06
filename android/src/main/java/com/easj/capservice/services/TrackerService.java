@@ -71,6 +71,7 @@ public class TrackerService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
+        Toast.show(this, "Service starting in background");
         context = this;
         swToast = true;
         preferences = TrackerPreferences.getInstance(getApplicationContext());
@@ -97,7 +98,6 @@ public class TrackerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.show(this, "Service starting in background");
         Log.d(SERVICE_NAME, "Service -----");
         try {
             if (intent != null) {
@@ -134,10 +134,10 @@ public class TrackerService extends Service {
                                         Log.d(SERVICE_NAME, "Send Location Socket");
                                     } else {
                                         mSocket.connected();
-                                        if (swToast) {
-                                            Toast.show(context, "Socket connection failed!");
-                                            swToast = false;
-                                        }
+//                                        if (swToast) {
+//                                            Toast.show(context, "Socket connection failed!");
+//                                            swToast = false;
+//                                        }
                                     }
                                 }
                             }
