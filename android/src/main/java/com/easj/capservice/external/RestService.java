@@ -12,7 +12,7 @@ public interface RestService {
     // String URL = "https://mshuttleapidev.trip2.com/REST/";
 
     // @POST("Trip2Driver/Location")
-    @POST("")
+    @POST
     Call<ResponseMessage> sendLocationTracker(
             @Header("Authorization") String authorization,
             @Body SendLocation sendLocation

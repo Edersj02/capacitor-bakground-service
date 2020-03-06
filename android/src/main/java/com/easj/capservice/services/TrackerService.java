@@ -62,6 +62,9 @@ public class TrackerService extends Service {
             if (preferences != null) {
                 sessionData = preferences.getSessionData();
                 mSocket = IO.socket(sessionData.getSocketUrl());
+                mSocket.connect();
+                mSocket.io().reconnection(true);
+                Log.d(SERVICE_NAME, mSocket.disconnect().toString());
                 //mSocket = IO.socket("https://trackingnode.herokuapp.com/");
             }
         } catch (URISyntaxException e) {
@@ -79,8 +82,6 @@ public class TrackerService extends Service {
         swToast = true;
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         initSocket(preferences);
-        mSocket.connect();
-        mSocket.io().reconnection(true);
         if (preferences != null) {
             sessionData = preferences.getSessionData();
             dataSource = CloudDataSource.getInstance(sessionData.getUrl());
