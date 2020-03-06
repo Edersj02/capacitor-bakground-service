@@ -126,7 +126,7 @@ public class TrackerService extends Service {
                                     data.put("driverid", sessionData.getDriverId());
                                     data.put("name", sessionData.getDriverName());
                                     data.put("dateTime", dateTime);
-                                    data.put("data", data);
+                                    obj.put("data", data);
                                     if (mSocket.connected()) {
                                         mSocket.emit("newLocation", obj);
                                         swToast = true;
