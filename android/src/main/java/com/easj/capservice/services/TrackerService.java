@@ -32,6 +32,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,7 +59,12 @@ public class TrackerService extends Service {
     public Socket mSocket;
     {
         try{
-            mSocket = IO.socket("https://trackingnode.herokuapp.com/");
+            preferences = TrackerPreferences.getInstance(getApplicationContext());
+            if (preferences != null) {
+                sessionData = preferences.getSessionData();
+                mSocket = IO.socket(sessionData.getSocketUrl());
+                //mSocket = IO.socket("https://trackingnode.herokuapp.com/");
+            }
         } catch (URISyntaxException e) {
             Log.d(SERVICE_NAME, "Error socket: " + e.getMessage());
         }
@@ -116,9 +122,15 @@ public class TrackerService extends Service {
                                     obj.put("id", sessionData.getDriverId());
                                     obj.put("lat", location.getLatitude());
                                     obj.put("lng", location.getLongitude());
+                                    obj.put("speed", location.getSpeed());
+                                    obj.put("accuracy", location.getAccuracy());
+                                    obj.put("altitude", location.getAltitude());
+                                    obj.put("time", location.getTime());
                                     JSONObject data = new JSONObject();
+                                    Date dateTime = new Date();
                                     data.put("driverid", sessionData.getDriverId());
-                                    data.put("name", "");
+                                    data.put("name", sessionData.getDriverName());
+                                    data.put("dateTime", dateTime);
                                     data.put("data", data);
                                     if (mSocket.connected()) {
                                         mSocket.emit("newLocation", obj);
