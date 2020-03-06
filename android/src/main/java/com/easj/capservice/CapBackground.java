@@ -295,6 +295,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
             context.startService(intent);
         }
         mGoogleApiClient.disconnect();
+        mGoogleApiClient.stopAutoManage((FragmentActivity) activity);
         mGoogleApiClient = null;
         mLocationSettingsRequest = null;
         mLocationRequest = null;
