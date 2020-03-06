@@ -118,8 +118,9 @@ public class TrackerService extends Service {
                                     data.put("name", "");
                                     data.put("data", data);
                                     if (mSocket.connected()) {
-                                        mSocket.emit("driver-location", obj);
+                                        mSocket.emit("showLocation", obj);
                                         swToast = true;
+                                        Log.d(SERVICE_NAME, "Send Location Socket");
                                     } else {
                                         mSocket.connected();
                                         if (swToast) {
