@@ -57,9 +57,8 @@ public class TrackerService extends Service {
     private boolean swToast = false;
 
     public Socket mSocket;
-    {
+    private void initSocket(TrackerPreferences preferences) {
         try{
-            preferences = TrackerPreferences.getInstance(getApplicationContext());
             if (preferences != null) {
                 sessionData = preferences.getSessionData();
                 mSocket = IO.socket(sessionData.getSocketUrl());
@@ -78,9 +77,10 @@ public class TrackerService extends Service {
         // background priority so CPU-intensive work doesn't disrupt our UI.
         context = this;
         swToast = true;
+        preferences = TrackerPreferences.getInstance(getApplicationContext());
+        initSocket(preferences);
         mSocket.connect();
         mSocket.io().reconnection(true);
-        preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
             sessionData = preferences.getSessionData();
             dataSource = CloudDataSource.getInstance(sessionData.getUrl());
