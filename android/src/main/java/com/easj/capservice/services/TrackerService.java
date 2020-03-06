@@ -26,7 +26,12 @@ import com.easj.capservice.entities.SendLocation;
 import com.easj.capservice.entities.SessionData;
 import com.easj.capservice.constans.Constans;
 import com.getcapacitor.ui.Toast;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,6 +52,17 @@ public class TrackerService extends Service {
     private Timer timer;
     private TimerTask task;
     final Handler handler = new Handler();
+
+    private boolean swToast = false;
+
+    public Socket mSocket;
+    {
+        try{
+            mSocket = IO.socket("https://trackingnode.herokuapp.com/");
+        } catch (URISyntaxException e) {
+            Log.d(SERVICE_NAME, "Error socket: " + e.getMessage());
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -89,6 +105,29 @@ public class TrackerService extends Service {
                             location = bundle.getParcelable("com.google.android.location.LOCATION");
                             if (location != null) {
                                 Log.i(SERVICE_NAME, "onHandleIntent " + location.getLatitude() + ", " + location.getLongitude());
+                                //Object[] object = new Object[4];
+                                preferences = TrackerPreferences.getInstance(getApplicationContext());
+                                sessionData = preferences.getSessionData();
+                                if (!sessionData.getToken().equals("")) {
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("id", sessionData.getDriverId());
+                                    obj.put("lat", location.getLatitude());
+                                    obj.put("lng", location.getLongitude());
+                                    JSONObject data = new JSONObject();
+                                    data.put("driverid", sessionData.getDriverId());
+                                    data.put("name", "");
+                                    data.put("data", data);
+                                    if (mSocket.connected()) {
+                                        mSocket.emit("driver-location", obj);
+                                        swToast = true;
+                                    } else {
+                                        mSocket.connected();
+                                        if (swToast) {
+                                            Toast.show(context, "Socket connection failed!");
+                                            swToast = false;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -102,9 +141,7 @@ public class TrackerService extends Service {
                         stopSelf();
                     }
                     timer.cancel();
-                    timer = null;
                     task.cancel();
-                    task = null;
                     return START_NOT_STICKY;
                 }
             }
@@ -152,8 +189,8 @@ public class TrackerService extends Service {
                 Log.d(SERVICE_NAME, "Init timer service locations");
                 try {
                     if (location != null) {
-                        preferences = TrackerPreferences.getInstance(getApplicationContext());
-                        sessionData = preferences.getSessionData();
+                        // preferences = TrackerPreferences.getInstance(getApplicationContext());
+                        // sessionData = preferences.getSessionData();
                         Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                         if (!sessionData.getToken().equals("")) {
                             sendLocation = new SendLocation();
