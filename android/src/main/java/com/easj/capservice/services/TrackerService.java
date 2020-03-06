@@ -45,6 +45,7 @@ public class TrackerService extends Service {
     private Context context;
 
     private Timer timer;
+    private TimerTask task;
     final Handler handler = new Handler();
 
     @Override
@@ -102,6 +103,8 @@ public class TrackerService extends Service {
                     }
                     timer.cancel();
                     timer = null;
+                    task.cancel();
+                    task = null;
                     return START_NOT_STICKY;
                 }
             }
@@ -143,7 +146,7 @@ public class TrackerService extends Service {
     }
 
     private void sentLocationTracker() {
-        TimerTask task = new TimerTask() {
+        task = new TimerTask() {
             @Override
             public void run() {
                 Log.d(SERVICE_NAME, "Init timer service locations");
