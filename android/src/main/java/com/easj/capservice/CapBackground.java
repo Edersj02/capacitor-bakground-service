@@ -66,6 +66,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
+    private PendingIntent pendingIntent;
 
     private ITrackerPreferences preferences;
 
@@ -73,10 +74,10 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_CHECK_SETTINGS = 2;
 
-    private static final long UPDATE_INTERVAL = 2000;
+    private static final long UPDATE_INTERVAL = 5000;
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
-    private Timer timer = new Timer();
+    private Timer timer;
 
 //    @PluginMethod()
 //    public void echo(PluginCall call) {
@@ -121,6 +122,9 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         preferences.save(sessionData);
         if (networkStatus()) {
             // manageDeniedPermission();
+            if (timer == null) {
+                timer = new Timer();
+            }
             buildGoogleApiClient();
             createLocationRequest();
             buildLocationSettingsRequest();
@@ -266,7 +270,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private void startLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
         intent.setAction(Constans.START_FOREGROUND_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+        pendingIntent = PendingIntent.getService(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(
@@ -281,22 +285,25 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
     private void stopLocationUpdates() {
         Intent intent = new Intent(context, TrackerService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         LocationServices.getFusedLocationProviderClient(context)
                 .removeLocationUpdates(pendingIntent);
 
         intent.setAction(Constans.STOP_FOREGROUND_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
+        context.startService(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            context.startForegroundService(intent);
+//        } else {
+//            context.startService(intent);
+//        }
         mGoogleApiClient.disconnect();
+        mGoogleApiClient.stopAutoManage((FragmentActivity) activity);
         mGoogleApiClient = null;
         mLocationSettingsRequest = null;
         mLocationRequest = null;
+        pendingIntent = null;
     }
 
     private boolean isLocationPermissionGranted() {
@@ -336,10 +343,9 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
             public void run() {
                 Log.d(CLASS_NAME, "Init timer locations");
                 startLocationUpdates();
-                timer.cancel();
                 Log.d(CLASS_NAME, "Stop timer locations");
             }
         };
-        timer.schedule(task, 10000L, 60000L);
+        timer.schedule(task, 10000L);
     }
 }

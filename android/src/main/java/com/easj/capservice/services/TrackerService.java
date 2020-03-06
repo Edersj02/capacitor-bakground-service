@@ -26,7 +26,12 @@ import com.easj.capservice.entities.SendLocation;
 import com.easj.capservice.entities.SessionData;
 import com.easj.capservice.constans.Constans;
 import com.getcapacitor.ui.Toast;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,7 +50,19 @@ public class TrackerService extends Service {
     private Context context;
 
     private Timer timer;
+    private TimerTask task;
     final Handler handler = new Handler();
+
+    private boolean swToast = false;
+
+    public Socket mSocket;
+    {
+        try{
+            mSocket = IO.socket("https://trackingnode.herokuapp.com/");
+        } catch (URISyntaxException e) {
+            Log.d(SERVICE_NAME, "Error socket: " + e.getMessage());
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -54,6 +71,9 @@ public class TrackerService extends Service {
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
         context = this;
+        swToast = true;
+        mSocket.connect();
+        mSocket.io().reconnection(true);
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
             sessionData = preferences.getSessionData();
@@ -88,18 +108,46 @@ public class TrackerService extends Service {
                             location = bundle.getParcelable("com.google.android.location.LOCATION");
                             if (location != null) {
                                 Log.i(SERVICE_NAME, "onHandleIntent " + location.getLatitude() + ", " + location.getLongitude());
+                                //Object[] object = new Object[4];
+                                preferences = TrackerPreferences.getInstance(getApplicationContext());
+                                sessionData = preferences.getSessionData();
+                                if (!sessionData.getToken().equals("")) {
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("id", sessionData.getDriverId());
+                                    obj.put("lat", location.getLatitude());
+                                    obj.put("lng", location.getLongitude());
+                                    JSONObject data = new JSONObject();
+                                    data.put("driverid", sessionData.getDriverId());
+                                    data.put("name", "");
+                                    data.put("data", data);
+                                    if (mSocket.connected()) {
+                                        mSocket.emit("newLocation", obj);
+                                        swToast = true;
+                                        Log.d(SERVICE_NAME, "Send Location Socket");
+                                    } else {
+                                        mSocket.connected();
+                                        if (swToast) {
+                                            Toast.show(context, "Socket connection failed!");
+                                            swToast = false;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
                 if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        stopForeground(true);
-                        stopSelf();
-                    } else {
-                        stopSelf();
-                    }
+                    stopForeground(true);
+                    stopSelf();
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                        stopForeground(true);
+//                        stopSelf();
+//                    } else {
+//                        stopSelf();
+//                    }
+                    timer.cancel();
+                    task.cancel();
                     return START_NOT_STICKY;
                 }
             }
@@ -141,38 +189,67 @@ public class TrackerService extends Service {
     }
 
     private void sentLocationTracker() {
-        TimerTask task = new TimerTask() {
+        task = new TimerTask() {
             @Override
             public void run() {
-                Log.d(SERVICE_NAME, "Init timer locations");
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (location != null) {
-                                preferences = TrackerPreferences.getInstance(getApplicationContext());
-                                sessionData = preferences.getSessionData();
-                                Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
-                                if (!sessionData.getToken().equals("")) {
-                                    sendLocation = new SendLocation();
-                                    sendLocation.setDriverId(sessionData.getDriverId());
-                                    sendLocation.setLatitude(location.getLatitude());
-                                    sendLocation.setLongitude(location.getLongitude());
-                                    sendLocation.setSpeed(location.getSpeed());
-                                    dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
-                                } else {
-                                    Log.d(SERVICE_NAME, "No Send Location ----");
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Log.d(SERVICE_NAME, "Error timer: " + ex.getMessage());
+                Log.d(SERVICE_NAME, "Init timer service locations");
+                try {
+                    if (location != null) {
+                        // preferences = TrackerPreferences.getInstance(getApplicationContext());
+                        // sessionData = preferences.getSessionData();
+                        Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
+                        if (!sessionData.getToken().equals("")) {
+                            sendLocation = new SendLocation();
+                            sendLocation.setDriverId(sessionData.getDriverId());
+                            sendLocation.setLatitude(location.getLatitude());
+                            sendLocation.setLongitude(location.getLongitude());
+                            sendLocation.setSpeed(location.getSpeed());
+                            dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
+                        } else {
+                            Log.d(SERVICE_NAME, "No Send Location ----");
                         }
                     }
-                });
+                } catch (Exception ex) {
+                    Log.d(SERVICE_NAME, "Error timer: " + ex.getMessage());
+                }
             }
         };
-        timer.schedule(task, 4000L, 60000L);
+        timer.schedule(task, 4000L, 70000L);
     }
+
+//    private void sentLocationTracker() {
+//        TimerTask task = new TimerTask() {
+//            @Override
+//            public void run() {
+//                Log.d(SERVICE_NAME, "Init timer locations");
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            if (location != null) {
+//                                preferences = TrackerPreferences.getInstance(getApplicationContext());
+//                                sessionData = preferences.getSessionData();
+//                                Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
+//                                if (!sessionData.getToken().equals("")) {
+//                                    sendLocation = new SendLocation();
+//                                    sendLocation.setDriverId(sessionData.getDriverId());
+//                                    sendLocation.setLatitude(location.getLatitude());
+//                                    sendLocation.setLongitude(location.getLongitude());
+//                                    sendLocation.setSpeed(location.getSpeed());
+//                                    dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
+//                                } else {
+//                                    Log.d(SERVICE_NAME, "No Send Location ----");
+//                                }
+//                            }
+//                        } catch (Exception ex) {
+//                            Log.d(SERVICE_NAME, "Error timer: " + ex.getMessage());
+//                        }
+//                    }
+//                });
+//            }
+//        };
+//        timer.schedule(task, 4000L, 60000L);
+//    }
 
     /**
      * enabledMockLocation
