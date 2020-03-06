@@ -74,7 +74,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_CHECK_SETTINGS = 2;
 
-    private static final long UPDATE_INTERVAL = 2000;
+    private static final long UPDATE_INTERVAL = 5000;
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
     private Timer timer = new Timer();
