@@ -78,7 +78,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     private static final long UPDATE_FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
 
     private Timer timer;
-    private TimerTask task;
 
 //    @PluginMethod()
 //    public void echo(PluginCall call) {
@@ -338,16 +337,14 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private void startLocationsTimer() {
-        task = new TimerTask() {
+        TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 Log.d(CLASS_NAME, "Init timer locations");
                 startLocationUpdates();
-                timer.cancel();
-                task.cancel();
                 Log.d(CLASS_NAME, "Stop timer locations");
             }
         };
-        timer.schedule(task, 10000L, 60000L);
+        timer.schedule(task, 10000L);
     }
 }
