@@ -97,7 +97,7 @@ public class TrackerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Toast.show(this, "service starting");
+        Toast.show(this, "Service starting in background");
         Log.d(SERVICE_NAME, "Service -----");
         try {
             if (intent != null) {
@@ -125,6 +125,7 @@ public class TrackerService extends Service {
                                     Date dateTime = new Date();
                                     data.put("driverid", sessionData.getDriverId());
                                     data.put("name", sessionData.getDriverName());
+                                    data.put("vehicle", sessionData.getPin());
                                     data.put("dateTime", dateTime);
                                     obj.put("data", data);
                                     if (mSocket.connected()) {
@@ -172,8 +173,9 @@ public class TrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        stopSelf();
-        Toast.show(this, "service done");
+        mSocket.disconnect();
+        mSocket.close();
+        Toast.show(this, "Service in background done");
     }
 
     private void createChanelIdNotifications(){
