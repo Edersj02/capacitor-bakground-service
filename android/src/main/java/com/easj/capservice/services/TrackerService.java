@@ -71,6 +71,9 @@ public class TrackerService extends Service {
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
         context = this;
+        swToast = true;
+        mSocket.connect();
+        mSocket.io().reconnection(true);
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
             sessionData = preferences.getSessionData();
