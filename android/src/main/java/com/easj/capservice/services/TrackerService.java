@@ -138,12 +138,14 @@ public class TrackerService extends Service {
                 }
                 if (intent.getAction().equals(Constans.STOP_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        stopForeground(true);
-                        stopSelf();
-                    } else {
-                        stopSelf();
-                    }
+                    stopForeground(true);
+                    stopSelf();
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                        stopForeground(true);
+//                        stopSelf();
+//                    } else {
+//                        stopSelf();
+//                    }
                     timer.cancel();
                     task.cancel();
                     return START_NOT_STICKY;
