@@ -123,14 +123,14 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         preferences.save(sessionData);
         if (networkStatus()) {
             // manageDeniedPermission();
+            if (timer == null) {
+                timer = new Timer();
+            }
             buildGoogleApiClient();
             createLocationRequest();
             buildLocationSettingsRequest();
             checkLocationSettings();
             startLocationsTimer();
-            if (timer == null) {
-                timer = new Timer();
-            }
         }
         JSObject ret = new JSObject();
         ret.put("value", "Start Service");
