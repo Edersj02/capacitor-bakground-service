@@ -292,11 +292,12 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
                 .removeLocationUpdates(pendingIntent);
 
         intent.setAction(Constans.STOP_FOREGROUND_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
+        context.startService(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            context.startForegroundService(intent);
+//        } else {
+//            context.startService(intent);
+//        }
         mGoogleApiClient.disconnect();
         mGoogleApiClient.stopAutoManage((FragmentActivity) activity);
         mGoogleApiClient = null;
