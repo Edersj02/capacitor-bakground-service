@@ -127,6 +127,7 @@ public class TrackerService extends Service {
                                     data.put("name", sessionData.getDriverName());
                                     data.put("vehicle", sessionData.getPin());
                                     data.put("dateTime", dateTime);
+                                    data.put("driverstatus", sessionData.getDriverStatus());
                                     obj.put("data", data);
                                     if (mSocket.connected()) {
                                         mSocket.emit("newLocation", obj);
@@ -134,10 +135,6 @@ public class TrackerService extends Service {
                                         Log.d(SERVICE_NAME, "Send Location Socket");
                                     } else {
                                         mSocket.connected();
-//                                        if (swToast) {
-//                                            Toast.show(context, "Socket connection failed!");
-//                                            swToast = false;
-//                                        }
                                     }
                                 }
                             }

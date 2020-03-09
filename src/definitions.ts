@@ -16,4 +16,5 @@ export interface CapBackground {
     url: string,
     socketUrl: string
   }): Promise<{}>;
+  setDriverStatus(options: {driverstatus: any}): Promise<{}>;
 }

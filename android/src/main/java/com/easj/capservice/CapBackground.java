@@ -45,6 +45,9 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -125,6 +128,18 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         }
         JSObject ret = new JSObject();
         ret.put("value", "Start Service");
+        call.resolve(ret);
+    }
+
+    @PluginMethod()
+    public void setDriverStatus(PluginCall call) {
+        context = this.getContext();
+        activity = getActivity();
+        preferences = TrackerPreferences.getInstance(context);
+        JSONObject object = call.getObject("driverstatus");
+        preferences.setDriverStatus(object);
+        JSObject ret = new JSObject();
+        ret.put("value", "Set Driver Status");
         call.resolve(ret);
     }
 

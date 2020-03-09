@@ -14,6 +14,8 @@ public class SessionData {
 
     private String socketUrl;
 
+    private DriverStatus driverStatus;
+
     public SessionData() {
         super();
     }
@@ -74,4 +76,66 @@ public class SessionData {
     public void setSocketUrl(String socketUrl) {
         this.socketUrl = socketUrl;
     }
+
+    public DriverStatus getDriverStatus() {
+        return driverStatus;
+    }
+
+    public void setDriverStatus(DriverStatus driverStatus) {
+        this.driverStatus = driverStatus;
+    }
+
+    public static class DriverStatus {
+        private int driverStatusId;
+
+        private String description;
+
+        private int categoryId;
+
+        private boolean isActive;
+
+        public DriverStatus() {
+            super();
+        }
+
+        public DriverStatus(int driverStatusId, String description, int categoryId, boolean isActive) {
+            this.driverStatusId = driverStatusId;
+            this.description = description;
+            this.categoryId = categoryId;
+            this.isActive = isActive;
+        }
+
+        public int getDriverStatusId() {
+            return driverStatusId;
+        }
+
+        public void setDriverStatusId(int driverStatusId) {
+            this.driverStatusId = driverStatusId;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
+        }
+
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public void setActive(boolean active) {
+            isActive = active;
+        }
+    }
+
 }

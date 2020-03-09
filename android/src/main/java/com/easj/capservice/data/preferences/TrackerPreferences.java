@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.easj.capservice.entities.SessionData;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 public class TrackerPreferences implements ITrackerPreferences {
 
@@ -16,6 +19,7 @@ public class TrackerPreferences implements ITrackerPreferences {
     private static final String TOKEN = CLASS_NAME + ".token";
     private static final String URL = CLASS_NAME + ".url";
     private static final String SOCKET_URL = CLASS_NAME + ".socketUrl";
+    private static final String DRIVER_STATUS = CLASS_NAME + ".driverStatus";
 
     private static TrackerPreferences INSTANCE;
     private SharedPreferences preferences;
@@ -52,6 +56,22 @@ public class TrackerPreferences implements ITrackerPreferences {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(TOKEN, "");
         editor.apply();
+    }
+
+    @Override
+    public void setDriverStatus(JSONObject driverStatus) {
+        if (driverStatus != null) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(DRIVER_STATUS, driverStatus.toString());
+            editor.apply();
+        }
+    }
+
+    @Override
+    public SessionData.DriverStatus getDriverStatus() {
+        Gson g = new Gson();
+        return g.fromJson(preferences.getString(DRIVER_STATUS, ""),
+                SessionData.DriverStatus.class);
     }
 
     @Override
