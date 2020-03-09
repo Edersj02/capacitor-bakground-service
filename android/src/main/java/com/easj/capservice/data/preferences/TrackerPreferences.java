@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.easj.capservice.entities.SessionData;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TrackerPreferences implements ITrackerPreferences {
@@ -68,10 +69,8 @@ public class TrackerPreferences implements ITrackerPreferences {
     }
 
     @Override
-    public SessionData.DriverStatus getDriverStatus() {
-        Gson g = new Gson();
-        return g.fromJson(preferences.getString(DRIVER_STATUS, ""),
-                SessionData.DriverStatus.class);
+    public JSONObject getDriverStatus() throws JSONException {
+        return new JSONObject(preferences.getString(DRIVER_STATUS, ""));
     }
 
     @Override
