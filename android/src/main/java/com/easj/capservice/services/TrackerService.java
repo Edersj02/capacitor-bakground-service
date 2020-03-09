@@ -112,6 +112,7 @@ public class TrackerService extends Service {
                                 //Object[] object = new Object[4];
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
+                                sessionData.setDriverStatus(preferences.getDriverStatus());
                                 if (!sessionData.getToken().equals("")) {
                                     JSONObject obj = new JSONObject();
                                     obj.put("id", sessionData.getDriverId());
@@ -130,6 +131,7 @@ public class TrackerService extends Service {
                                     data.put("driverstatus", sessionData.getDriverStatus());
                                     obj.put("data", data);
                                     if (mSocket.connected()) {
+                                        Log.d(SERVICE_NAME, obj.toString());
                                         mSocket.emit("newLocation", obj);
                                         swToast = true;
                                         Log.d(SERVICE_NAME, "Send Location Socket");
