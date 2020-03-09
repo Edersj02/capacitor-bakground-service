@@ -112,7 +112,6 @@ public class TrackerService extends Service {
                                 //Object[] object = new Object[4];
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
-                                sessionData.setDriverStatus(preferences.getDriverStatus());
                                 if (!sessionData.getToken().equals("")) {
                                     JSONObject obj = new JSONObject();
                                     obj.put("id", sessionData.getDriverId());
@@ -128,7 +127,7 @@ public class TrackerService extends Service {
                                     data.put("name", sessionData.getDriverName());
                                     data.put("vehicle", sessionData.getPin());
                                     data.put("dateTime", dateTime);
-                                    data.put("driverstatus", sessionData.getDriverStatus());
+                                    data.put("driverstatus", preferences.getDriverStatus());
                                     obj.put("data", data);
                                     if (mSocket.connected()) {
                                         Log.d(SERVICE_NAME, obj.toString());
