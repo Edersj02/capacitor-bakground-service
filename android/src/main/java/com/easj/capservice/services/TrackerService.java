@@ -32,6 +32,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -70,11 +71,12 @@ public class TrackerService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
+        Toast.show(this, "Service starting in background");
         context = this;
         swToast = true;
+        preferences = TrackerPreferences.getInstance(getApplicationContext());
         mSocket.connect();
         mSocket.io().reconnection(true);
-        preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
             sessionData = preferences.getSessionData();
             dataSource = CloudDataSource.getInstance(sessionData.getUrl());
@@ -96,7 +98,6 @@ public class TrackerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Toast.show(this, "service starting");
         Log.d(SERVICE_NAME, "Service -----");
         try {
             if (intent != null) {
@@ -116,20 +117,25 @@ public class TrackerService extends Service {
                                     obj.put("id", sessionData.getDriverId());
                                     obj.put("lat", location.getLatitude());
                                     obj.put("lng", location.getLongitude());
+                                    obj.put("speed", location.getSpeed());
+                                    obj.put("accuracy", location.getAccuracy());
+                                    obj.put("altitude", location.getAltitude());
+                                    obj.put("time", location.getTime());
                                     JSONObject data = new JSONObject();
+                                    Date dateTime = new Date();
                                     data.put("driverid", sessionData.getDriverId());
-                                    data.put("name", "");
-                                    data.put("data", data);
+                                    data.put("name", sessionData.getDriverName());
+                                    data.put("vehicle", sessionData.getPin());
+                                    data.put("dateTime", dateTime);
+                                    data.put("driverstatus", preferences.getDriverStatus());
+                                    obj.put("data", data);
                                     if (mSocket.connected()) {
+                                        Log.d(SERVICE_NAME, obj.toString());
                                         mSocket.emit("newLocation", obj);
                                         swToast = true;
                                         Log.d(SERVICE_NAME, "Send Location Socket");
                                     } else {
                                         mSocket.connected();
-                                        if (swToast) {
-                                            Toast.show(context, "Socket connection failed!");
-                                            swToast = false;
-                                        }
                                     }
                                 }
                             }
@@ -165,8 +171,9 @@ public class TrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        stopSelf();
-        Toast.show(this, "service done");
+        mSocket.disconnect();
+        mSocket.close();
+        Toast.show(this, "Service in background done");
     }
 
     private void createChanelIdNotifications(){

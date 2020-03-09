@@ -45,6 +45,9 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -79,20 +82,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
     private Timer timer;
 
-//    @PluginMethod()
-//    public void echo(PluginCall call) {
-//        String value = call.getString("value");
-//
-//        context = this.getContext();
-//        activity = getActivity();
-//
-//        JSObject ret = new JSObject();
-//        ret.put("key", "This is a test for Android");
-//        ret.put("value", value);
-//        Toast.show(context, value + " - " + ret.getString("key"));
-//        call.success(ret);
-//    }
-
     @PluginMethod()
     public void stopBackgroundService(PluginCall call) {
         context = this.getContext();
@@ -113,11 +102,17 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         SessionData sessionData = new SessionData();
         requestChangeBatteryOptimizations();
         int id = Integer.parseInt(call.getString("diverid"));
+        String name = call.getString("drivername");
+        int pin = Integer.parseInt(call.getString("pin"));
         String token = call.getString("token");
         String url = call.getString("url");
+        String socketUrl = call.getString("socketurl");
         sessionData.setDriverId(id);
+        sessionData.setDriverName(name);
+        sessionData.setPin(pin);
         sessionData.setToken(token);
         sessionData.setUrl(url);
+        sessionData.setSocketUrl(socketUrl);
         Log.d(CLASS_NAME, "Token -----" + sessionData.getToken());
         preferences.save(sessionData);
         if (networkStatus()) {
@@ -133,6 +128,18 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         }
         JSObject ret = new JSObject();
         ret.put("value", "Start Service");
+        call.resolve(ret);
+    }
+
+    @PluginMethod()
+    public void setDriverStatus(PluginCall call) {
+        context = this.getContext();
+        activity = getActivity();
+        preferences = TrackerPreferences.getInstance(context);
+        JSONObject object = call.getObject("driverstatus");
+        preferences.setDriverStatus(object);
+        JSObject ret = new JSObject();
+        ret.put("value", "Set Driver Status");
         call.resolve(ret);
     }
 
@@ -293,11 +300,6 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
 
         intent.setAction(Constans.STOP_FOREGROUND_ACTION);
         context.startService(intent);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            context.startForegroundService(intent);
-//        } else {
-//            context.startService(intent);
-//        }
         mGoogleApiClient.disconnect();
         mGoogleApiClient.stopAutoManage((FragmentActivity) activity);
         mGoogleApiClient = null;
