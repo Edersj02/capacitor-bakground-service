@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class TrackerPreferences implements ITrackerPreferences {
 
     private static final String CLASS_NAME = TrackerPreferences.class.getName();
@@ -70,7 +72,11 @@ public class TrackerPreferences implements ITrackerPreferences {
 
     @Override
     public JSONObject getDriverStatus() throws JSONException {
-        return new JSONObject(preferences.getString(DRIVER_STATUS, ""));
+        if (!Objects.equals(preferences.getString(DRIVER_STATUS, ""), "")) {
+            return new JSONObject(preferences.getString(DRIVER_STATUS, ""));
+        } else {
+            return new JSONObject();
+        }
     }
 
     @Override
