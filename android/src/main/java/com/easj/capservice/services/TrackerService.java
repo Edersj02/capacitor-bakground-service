@@ -119,6 +119,7 @@ public class TrackerService extends Service {
                                     obj.put("lng", location.getLongitude());
                                     obj.put("speed", location.getSpeed());
                                     obj.put("accuracy", location.getAccuracy());
+                                    obj.put("bearing", location.getBearing());
                                     obj.put("altitude", location.getAltitude());
                                     obj.put("time", location.getTime());
                                     JSONObject data = new JSONObject();
