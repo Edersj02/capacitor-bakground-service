@@ -78,10 +78,10 @@ public class TrackerService extends Service {
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences != null) {
             sessionData = preferences.getSessionData();
-            if (sessionData.isSocketActive()) {
+            /*if (sessionData.isSocketActive()) {
                 mSocket.connect();
                 mSocket.io().reconnection(true);
-            }
+            }*/
             dataSource = CloudDataSource.getInstance(sessionData.getUrl());
         }
         if (Build.VERSION.SDK_INT >= 26) {
@@ -115,7 +115,7 @@ public class TrackerService extends Service {
                                 //Object[] object = new Object[4];
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
-                                if ((!sessionData.getToken().equals("")) && sessionData.isSocketActive()) {
+                                if ((!sessionData.getToken().equals(""))) {
                                     JSONObject obj = new JSONObject();
                                     obj.put("id", sessionData.getDriverId());
                                     obj.put("lat", location.getLatitude());
@@ -135,7 +135,7 @@ public class TrackerService extends Service {
                                     obj.put("data", data);
                                     if (mSocket.connected()) {
                                         Log.d(SERVICE_NAME, obj.toString());
-                                        mSocket.emit("newLocation", obj);
+                                        // mSocket.emit("newLocation", obj);
                                         swToast = true;
                                         Log.d(SERVICE_NAME, "Send Location Socket");
                                     } else {
@@ -171,10 +171,10 @@ public class TrackerService extends Service {
     public void onDestroy() {
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         sessionData = preferences.getSessionData();
-        if (sessionData.isSocketActive()) {
+        /*if (sessionData.isSocketActive()) {
             mSocket.disconnect();
             mSocket.close();
-        }
+        }*/
         Toast.show(this, "Service in background done");
     }
 
