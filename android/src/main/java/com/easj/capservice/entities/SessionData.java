@@ -1,5 +1,7 @@
 package com.easj.capservice.entities;
 
+import java.util.ArrayList;
+
 public class SessionData {
 
     private int driverId;
@@ -14,19 +16,24 @@ public class SessionData {
 
     private String socketUrl;
 
+    private boolean socketActive;
+
     private DriverStatus driverStatus;
+
+    private ArrayList<Integer> tripIds;
 
     public SessionData() {
         super();
     }
 
-    public SessionData(int driverId, String DriverName, int pin, String token, String url, String socketUrl) {
+    public SessionData(int driverId, String DriverName, int pin, String token, String url, String socketUrl, boolean socketActive) {
         this.driverId = driverId;
         this.DriverName = DriverName;
         this.pin = pin;
         this.token = token;
         this.url = url;
         this.socketUrl = socketUrl;
+        this.socketActive = socketActive;
     }
 
     public int getDriverId() {
@@ -77,12 +84,28 @@ public class SessionData {
         this.socketUrl = socketUrl;
     }
 
+    public boolean isSocketActive() {
+        return socketActive;
+    }
+
+    public void setSocketActive(boolean socketActive) {
+        this.socketActive = socketActive;
+    }
+
     public DriverStatus getDriverStatus() {
         return driverStatus;
     }
 
     public void setDriverStatus(DriverStatus driverStatus) {
         this.driverStatus = driverStatus;
+    }
+
+    public ArrayList<Integer> getTripIds() {
+        return tripIds;
+    }
+
+    public void setTripIds(ArrayList<Integer> tripIds) {
+        this.tripIds = tripIds;
     }
 
     public static class DriverStatus {

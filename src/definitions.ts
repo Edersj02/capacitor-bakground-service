@@ -1,6 +1,6 @@
-import {} from "@capacitor/core";
+import {} from '@capacitor/core';
 
-declare module "@capacitor/core" {
+declare module '@capacitor/core' {
   interface PluginRegistry {
     CapBackground: CapBackground;
   }
@@ -9,12 +9,13 @@ declare module "@capacitor/core" {
 export interface CapBackground {
   stopBackgroundService(): Promise<{}>;
   startBackgroundService(options: {
-    driverId: string,
-    driverName: string,
-    pin: string,
-    token: string,
-    url: string,
-    socketUrl: string
+    driverId: string;
+    driverName: string;
+    pin: string;
+    token: string;
+    url: string;
+    socketUrl: string;
+    socketActive: boolean;
   }): Promise<{}>;
-  setDriverStatus(options: {driverstatus: any}): Promise<{}>;
+  setDriverStatus(options: { driverstatus: any }): Promise<{}>;
 }

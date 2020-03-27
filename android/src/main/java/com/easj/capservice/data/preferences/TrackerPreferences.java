@@ -22,6 +22,7 @@ public class TrackerPreferences implements ITrackerPreferences {
     private static final String TOKEN = CLASS_NAME + ".token";
     private static final String URL = CLASS_NAME + ".url";
     private static final String SOCKET_URL = CLASS_NAME + ".socketUrl";
+    private static final String SOCKET_ACTIVE = CLASS_NAME + ".socketActive";
     private static final String DRIVER_STATUS = CLASS_NAME + ".driverStatus";
 
     private static TrackerPreferences INSTANCE;
@@ -50,6 +51,7 @@ public class TrackerPreferences implements ITrackerPreferences {
             editor.putString(TOKEN, data.getToken());
             editor.putString(URL, data.getUrl());
             editor.putString(SOCKET_URL, data.getSocketUrl());
+            editor.putBoolean(SOCKET_ACTIVE, data.isSocketActive());
             editor.apply();
         }
     }
@@ -87,7 +89,8 @@ public class TrackerPreferences implements ITrackerPreferences {
                 preferences.getInt(PIN, 0),
                 preferences.getString(TOKEN, ""),
                 preferences.getString(URL, ""),
-                preferences.getString(SOCKET_URL, "")
+                preferences.getString(SOCKET_URL, ""),
+                preferences.getBoolean(SOCKET_ACTIVE, true)
         );
     }
 }

@@ -32,6 +32,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,10 +76,12 @@ public class TrackerService extends Service {
         context = this;
         swToast = true;
         preferences = TrackerPreferences.getInstance(getApplicationContext());
-        mSocket.connect();
-        mSocket.io().reconnection(true);
         if (preferences != null) {
             sessionData = preferences.getSessionData();
+            if (sessionData.isSocketActive()) {
+                mSocket.connect();
+                mSocket.io().reconnection(true);
+            }
             dataSource = CloudDataSource.getInstance(sessionData.getUrl());
         }
         if (Build.VERSION.SDK_INT >= 26) {
@@ -112,7 +115,7 @@ public class TrackerService extends Service {
                                 //Object[] object = new Object[4];
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
-                                if (!sessionData.getToken().equals("")) {
+                                if ((!sessionData.getToken().equals("")) && sessionData.isSocketActive()) {
                                     JSONObject obj = new JSONObject();
                                     obj.put("id", sessionData.getDriverId());
                                     obj.put("lat", location.getLatitude());
@@ -147,12 +150,6 @@ public class TrackerService extends Service {
                     Log.d(SERVICE_NAME, "Service ----- STOP_FOREGROUND_ACTION");
                     stopForeground(true);
                     stopSelf();
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                        stopForeground(true);
-//                        stopSelf();
-//                    } else {
-//                        stopSelf();
-//                    }
                     timer.cancel();
                     task.cancel();
                     return START_NOT_STICKY;
@@ -172,8 +169,12 @@ public class TrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        mSocket.disconnect();
-        mSocket.close();
+        preferences = TrackerPreferences.getInstance(getApplicationContext());
+        sessionData = preferences.getSessionData();
+        if (sessionData.isSocketActive()) {
+            mSocket.disconnect();
+            mSocket.close();
+        }
         Toast.show(this, "Service in background done");
     }
 
@@ -212,6 +213,7 @@ public class TrackerService extends Service {
                             sendLocation.setLatitude(location.getLatitude());
                             sendLocation.setLongitude(location.getLongitude());
                             sendLocation.setSpeed(location.getSpeed());
+                            sendLocation.setTripsIds(new ArrayList<Integer>());
                             dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
                         } else {
                             Log.d(SERVICE_NAME, "No Send Location ----");
@@ -224,40 +226,6 @@ public class TrackerService extends Service {
         };
         timer.schedule(task, 4000L, 70000L);
     }
-
-//    private void sentLocationTracker() {
-//        TimerTask task = new TimerTask() {
-//            @Override
-//            public void run() {
-//                Log.d(SERVICE_NAME, "Init timer locations");
-//                handler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            if (location != null) {
-//                                preferences = TrackerPreferences.getInstance(getApplicationContext());
-//                                sessionData = preferences.getSessionData();
-//                                Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
-//                                if (!sessionData.getToken().equals("")) {
-//                                    sendLocation = new SendLocation();
-//                                    sendLocation.setDriverId(sessionData.getDriverId());
-//                                    sendLocation.setLatitude(location.getLatitude());
-//                                    sendLocation.setLongitude(location.getLongitude());
-//                                    sendLocation.setSpeed(location.getSpeed());
-//                                    dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
-//                                } else {
-//                                    Log.d(SERVICE_NAME, "No Send Location ----");
-//                                }
-//                            }
-//                        } catch (Exception ex) {
-//                            Log.d(SERVICE_NAME, "Error timer: " + ex.getMessage());
-//                        }
-//                    }
-//                });
-//            }
-//        };
-//        timer.schedule(task, 4000L, 60000L);
-//    }
 
     /**
      * enabledMockLocation

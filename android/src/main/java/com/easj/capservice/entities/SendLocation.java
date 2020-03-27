@@ -2,6 +2,8 @@ package com.easj.capservice.entities;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class SendLocation {
 
     @SerializedName("driverid")
@@ -12,6 +14,8 @@ public class SendLocation {
     Double Longitude;
     @SerializedName("speed")
     float Speed;
+    @SerializedName("tripsids")
+    ArrayList<Integer> tripsIds;
 
     public SendLocation() {
         super();
@@ -47,5 +51,13 @@ public class SendLocation {
 
     public void setSpeed(float speed) {
         Speed = speed;
+    }
+
+    public ArrayList<Integer> getTripsIds() {
+        return tripsIds;
+    }
+
+    public void setTripsIds(ArrayList<Integer> tripsIds) {
+        this.tripsIds = tripsIds;
     }
 }
