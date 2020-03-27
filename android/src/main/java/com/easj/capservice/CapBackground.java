@@ -107,7 +107,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         String token = call.getString("token");
         String url = call.getString("url");
         String socketUrl = call.getString("socketurl");
-        boolean socketActive = call.getBoolean("socketactive");
+        boolean socketActive = call.getString("socketactive", "true").equals("true");
         sessionData.setDriverId(id);
         sessionData.setDriverName(name);
         sessionData.setPin(pin);
