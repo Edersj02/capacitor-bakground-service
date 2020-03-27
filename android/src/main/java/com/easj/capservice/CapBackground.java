@@ -277,6 +277,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
     }
 
     private void startLocationUpdates() {
+        Log.d(CLASS_NAME, "Start -----");
         Intent intent = new Intent(context, TrackerService.class);
         intent.setAction(Constans.START_FOREGROUND_ACTION);
         pendingIntent = PendingIntent.getService(context, 0,
