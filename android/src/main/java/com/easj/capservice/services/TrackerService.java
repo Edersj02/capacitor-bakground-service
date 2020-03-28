@@ -29,6 +29,7 @@ import com.getcapacitor.ui.Toast;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -204,8 +205,14 @@ public class TrackerService extends Service {
                 Log.d(SERVICE_NAME, "Init timer service locations");
                 try {
                     if (location != null) {
-                        // preferences = TrackerPreferences.getInstance(getApplicationContext());
-                        // sessionData = preferences.getSessionData();
+                        ArrayList<Integer> tripsIds = new ArrayList<>();
+                        preferences = TrackerPreferences.getInstance(getApplicationContext());
+                        if (preferences.getTripsIds() != null) {
+                            JSONArray array = preferences.getTripsIds();
+                            for (int i=0; i<array.length(); i++) {
+                                tripsIds.add(Integer.parseInt(array.get(i).toString()));
+                            }
+                        }
                         Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                         if (!sessionData.getToken().equals("")) {
                             sendLocation = new SendLocation();
@@ -213,7 +220,7 @@ public class TrackerService extends Service {
                             sendLocation.setLatitude(location.getLatitude());
                             sendLocation.setLongitude(location.getLongitude());
                             sendLocation.setSpeed(location.getSpeed());
-                            sendLocation.setTripsIds(new ArrayList<Integer>());
+                            sendLocation.setTripsIds(tripsIds);
                             dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
                         } else {
                             Log.d(SERVICE_NAME, "No Send Location ----");

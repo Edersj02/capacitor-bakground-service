@@ -47,6 +47,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Timer;
@@ -142,6 +143,18 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         preferences.setDriverStatus(object);
         JSObject ret = new JSObject();
         ret.put("value", "Set Driver Status");
+        call.resolve(ret);
+    }
+
+    @PluginMethod()
+    public void setTripsIds(PluginCall call) {
+        context = this.getContext();
+        activity = getActivity();
+        preferences = TrackerPreferences.getInstance(context);
+        JSONArray object = call.getArray("tripsids");
+        preferences.setTripsIds(object);
+        JSObject ret = new JSObject();
+        ret.put("value", "Set Trips Ids");
         call.resolve(ret);
     }
 

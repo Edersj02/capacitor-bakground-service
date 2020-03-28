@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.easj.capservice.entities.SessionData;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +25,7 @@ public class TrackerPreferences implements ITrackerPreferences {
     private static final String SOCKET_URL = CLASS_NAME + ".socketUrl";
     private static final String SOCKET_ACTIVE = CLASS_NAME + ".socketActive";
     private static final String DRIVER_STATUS = CLASS_NAME + ".driverStatus";
+    private static final String TRIPS_IDS = CLASS_NAME + ".tripsIds";
 
     private static TrackerPreferences INSTANCE;
     private SharedPreferences preferences;
@@ -78,6 +80,24 @@ public class TrackerPreferences implements ITrackerPreferences {
             return new JSONObject(preferences.getString(DRIVER_STATUS, ""));
         } else {
             return new JSONObject();
+        }
+    }
+
+    @Override
+    public void setTripsIds(JSONArray tripsIds) {
+        if (tripsIds != null) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(TRIPS_IDS, tripsIds.toString());
+            editor.apply();
+        }
+    }
+
+    @Override
+    public JSONArray getTripsIds() throws JSONException {
+        if (!Objects.equals(preferences.getString(TRIPS_IDS, ""), "")) {
+            return new JSONArray(preferences.getString(TRIPS_IDS, ""));
+        } else {
+            return new JSONArray();
         }
     }
 

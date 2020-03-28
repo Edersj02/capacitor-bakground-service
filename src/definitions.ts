@@ -18,4 +18,5 @@ export interface CapBackground {
     socketActive: string;
   }): Promise<{}>;
   setDriverStatus(options: { driverstatus: any }): Promise<{}>;
+  setTripsIds(options: { tripsids: any[] }): Promise<{}>;
 }
