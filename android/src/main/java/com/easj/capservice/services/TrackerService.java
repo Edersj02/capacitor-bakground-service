@@ -83,7 +83,7 @@ public class TrackerService extends Service {
                 mSocket.connect();
                 mSocket.io().reconnection(true);
             }
-            dataSource = CloudDataSource.getInstance(sessionData.getUrl(), sessionData.getTenant());
+            dataSource = CloudDataSource.getInstance(sessionData.getUrl());
         }
         if (Build.VERSION.SDK_INT >= 26) {
             createChanelIdNotifications();

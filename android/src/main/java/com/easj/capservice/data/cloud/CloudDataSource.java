@@ -30,25 +30,11 @@ public class CloudDataSource implements ICloudDataSource {
     private Retrofit restAdapter;
     private RestService restClient;
 
-    private CloudDataSource(String url, final String tenant) {
+    private CloudDataSource(String url) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClient.addInterceptor(logging);
-        /*httpClient.addInterceptor(new Interceptor() {
-            @ParametersAreNonnullByDefault
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-
-                // Request customization: add request headers
-                Request.Builder requestBuilder = original.newBuilder()
-                        .header("Tenant", tenant); // <-- this is the important line
-
-                Request request = requestBuilder.build();
-                return chain.proceed(request);
-            }
-        });*/
         restAdapter = new Retrofit.Builder()
                 // .baseUrl(RestService.URL)
                 .baseUrl(url)
@@ -58,9 +44,9 @@ public class CloudDataSource implements ICloudDataSource {
         restClient = restAdapter.create(RestService.class);
     }
 
-    public static CloudDataSource getInstance(String url, String tenant) {
+    public static CloudDataSource getInstance(String url) {
         if (INSTANCE == null) {
-            INSTANCE = new CloudDataSource(url, tenant);
+            INSTANCE = new CloudDataSource(url);
         }
         return INSTANCE;
     }
