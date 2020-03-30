@@ -151,7 +151,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         context = this.getContext();
         activity = getActivity();
         preferences = TrackerPreferences.getInstance(context);
-        String tripsIds = call.getString("tripsids");
+        String tripsIds = call.getString("tripids");
         Log.d(CLASS_NAME, "Set TripIds -----" + tripsIds);
         preferences.setTripsIds(tripsIds);
         JSObject ret = new JSObject();
