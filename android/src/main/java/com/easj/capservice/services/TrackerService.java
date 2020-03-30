@@ -211,7 +211,6 @@ public class TrackerService extends Service {
                         if (preferences.getTripsIds() != null) {
                             Log.d(SERVICE_NAME, "TripIds: " + preferences.getTripsIds());
                             JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
-                            Log.d(SERVICE_NAME, "jsonArray: " + jsonArray.toString());
                             for(int i = 0; i < jsonArray.length(); i++) {
                                 tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
                             }
