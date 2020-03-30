@@ -94,10 +94,7 @@ public class TrackerPreferences implements ITrackerPreferences {
 
     @Override
     public String getTripsIds(){
-        if (!Objects.equals(preferences.getString(TRIPS_IDS, ""), "")) {
-            return preferences.getString(TRIPS_IDS, "");
-        }
-        return "";
+        return preferences.getString(TRIPS_IDS, "");
     }
 
     @Override
