@@ -5,7 +5,7 @@ import com.easj.capservice.external.ResponseMessage;
 
 public interface ICloudDataSource {
 
-    void sendLocationTracker(String url, String token, String tenant, SendLocation sendLocation);
+    void sendLocationTracker(String url, String token, SendLocation sendLocation);
 
     interface sendLocationTrackerCallback {
         void onSuccess(ResponseMessage message);

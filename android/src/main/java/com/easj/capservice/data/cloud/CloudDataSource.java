@@ -7,7 +7,13 @@ import com.easj.capservice.external.ErrorResponse;
 import com.easj.capservice.external.ResponseMessage;
 import com.easj.capservice.external.RestService;
 
+import java.io.IOException;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -24,11 +30,24 @@ public class CloudDataSource implements ICloudDataSource {
     private Retrofit restAdapter;
     private RestService restClient;
 
-    public CloudDataSource(String url) {
+    private CloudDataSource(String url, final String tenant) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClient.addInterceptor(logging);
+        httpClient.addInterceptor(new Interceptor() {
+            @ParametersAreNonnullByDefault
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                Request request = original.newBuilder()
+                        .header("Tenant", tenant)
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
         restAdapter = new Retrofit.Builder()
                 // .baseUrl(RestService.URL)
                 .baseUrl(url)
@@ -38,16 +57,16 @@ public class CloudDataSource implements ICloudDataSource {
         restClient = restAdapter.create(RestService.class);
     }
 
-    public static CloudDataSource getInstance(String url) {
+    public static CloudDataSource getInstance(String url, String tenant) {
         if (INSTANCE == null) {
-            INSTANCE = new CloudDataSource(url);
+            INSTANCE = new CloudDataSource(url, tenant);
         }
         return INSTANCE;
     }
 
     @Override
-    public void sendLocationTracker(String url, String token, String tenant, SendLocation sendLocation) {
-        Call<ResponseMessage> messageCall = restClient.sendLocationTracker(token, tenant, sendLocation);
+    public void sendLocationTracker(String url, String token, SendLocation sendLocation) {
+        Call<ResponseMessage> messageCall = restClient.sendLocationTracker(token, sendLocation);
         messageCall.enqueue(new Callback<ResponseMessage>() {
             @Override
             public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {

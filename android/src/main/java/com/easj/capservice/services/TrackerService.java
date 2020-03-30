@@ -83,7 +83,7 @@ public class TrackerService extends Service {
                 mSocket.connect();
                 mSocket.io().reconnection(true);
             }
-            dataSource = CloudDataSource.getInstance(sessionData.getUrl());
+            dataSource = CloudDataSource.getInstance(sessionData.getUrl(), sessionData.getTenant());
         }
         if (Build.VERSION.SDK_INT >= 26) {
             createChanelIdNotifications();
@@ -226,7 +226,7 @@ public class TrackerService extends Service {
                             sendLocation.setLongitude(location.getLongitude());
                             sendLocation.setSpeed(location.getSpeed());
                             sendLocation.setTripsIds(tripsIds);
-                            dataSource.sendLocationTracker("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
+                            dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
                         } else {
                             Log.d(SERVICE_NAME, "No Send Location ----");
                         }
