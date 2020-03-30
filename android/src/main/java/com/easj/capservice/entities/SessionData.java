@@ -12,6 +12,8 @@ public class SessionData {
 
     private String token;
 
+    private String tenant;
+
     private String url;
 
     private String socketUrl;
@@ -26,11 +28,12 @@ public class SessionData {
         super();
     }
 
-    public SessionData(int driverId, String DriverName, int pin, String token, String url, String socketUrl, boolean socketActive) {
+    public SessionData(int driverId, String DriverName, int pin, String token, String tenant, String url, String socketUrl, boolean socketActive) {
         this.driverId = driverId;
         this.DriverName = DriverName;
         this.pin = pin;
         this.token = token;
+        this.tenant = tenant;
         this.url = url;
         this.socketUrl = socketUrl;
         this.socketActive = socketActive;
@@ -66,6 +69,14 @@ public class SessionData {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
     }
 
     public String getUrl() {

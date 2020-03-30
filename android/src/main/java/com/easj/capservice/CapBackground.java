@@ -106,6 +106,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         String name = call.getString("drivername");
         int pin = Integer.parseInt(call.getString("pin"));
         String token = call.getString("token");
+        String tenant = call.getString("tenant");
         String url = call.getString("url");
         String socketUrl = call.getString("socketurl");
         boolean active = call.getString("socketactive").equals("true");
@@ -113,6 +114,7 @@ public class CapBackground extends Plugin implements GoogleApiClient.ConnectionC
         sessionData.setDriverName(name);
         sessionData.setPin(pin);
         sessionData.setToken(token);
+        sessionData.setTenant(tenant);
         sessionData.setUrl(url);
         sessionData.setSocketUrl(socketUrl);
         sessionData.setSocketActive(active);

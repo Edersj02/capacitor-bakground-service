@@ -13,6 +13,7 @@ export interface CapBackground {
     driverName: string;
     pin: string;
     token: string;
+    tenant: string;
     url: string;
     socketUrl: string;
     socketActive: string;

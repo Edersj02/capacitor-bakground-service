@@ -46,8 +46,8 @@ public class CloudDataSource implements ICloudDataSource {
     }
 
     @Override
-    public void sendLocationTracker(String url, String token, SendLocation sendLocation) {
-        Call<ResponseMessage> messageCall = restClient.sendLocationTracker(token, sendLocation);
+    public void sendLocationTracker(String url, String token, String tenant, SendLocation sendLocation) {
+        Call<ResponseMessage> messageCall = restClient.sendLocationTracker(token, tenant, sendLocation);
         messageCall.enqueue(new Callback<ResponseMessage>() {
             @Override
             public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
