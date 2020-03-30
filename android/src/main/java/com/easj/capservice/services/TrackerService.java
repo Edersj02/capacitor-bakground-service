@@ -208,7 +208,7 @@ public class TrackerService extends Service {
                         ArrayList<Integer> tripsIds = new ArrayList<>();
                         preferences = TrackerPreferences.getInstance(getApplicationContext());
                         Log.d(SERVICE_NAME, "Init TripId Size: " + tripsIds.size());
-                        if (preferences.getTripsIds() != null) {
+                        if (preferences.getTripsIds() != null && (!preferences.getTripsIds().equals(""))) {
                             Log.d(SERVICE_NAME, "TripIds: " + preferences.getTripsIds());
                             JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
                             for(int i = 0; i < jsonArray.length(); i++) {
