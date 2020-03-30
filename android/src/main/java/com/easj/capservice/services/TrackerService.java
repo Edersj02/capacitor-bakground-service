@@ -225,7 +225,7 @@ public class TrackerService extends Service {
                             sendLocation.setLongitude(location.getLongitude());
                             sendLocation.setSpeed(location.getSpeed());
                             sendLocation.setTripsIds(tripsIds);
-                            dataSource.sendLocationTracker("", sessionData.getToken(), sendLocation);
+                            dataSource.sendLocationTracker("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                         } else {
                             Log.d(SERVICE_NAME, "No Send Location ----");
                         }

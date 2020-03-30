@@ -35,19 +35,20 @@ public class CloudDataSource implements ICloudDataSource {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClient.addInterceptor(logging);
-        httpClient.addInterceptor(new Interceptor() {
+        /*httpClient.addInterceptor(new Interceptor() {
             @ParametersAreNonnullByDefault
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request original = chain.request();
-                Request request = original.newBuilder()
-                        .header("Tenant", tenant)
-                        .method(original.method(), original.body())
-                        .build();
 
+                // Request customization: add request headers
+                Request.Builder requestBuilder = original.newBuilder()
+                        .header("Tenant", tenant); // <-- this is the important line
+
+                Request request = requestBuilder.build();
                 return chain.proceed(request);
             }
-        });
+        });*/
         restAdapter = new Retrofit.Builder()
                 // .baseUrl(RestService.URL)
                 .baseUrl(url)
@@ -65,8 +66,8 @@ public class CloudDataSource implements ICloudDataSource {
     }
 
     @Override
-    public void sendLocationTracker(String url, String token, SendLocation sendLocation) {
-        Call<ResponseMessage> messageCall = restClient.sendLocationTracker(token, sendLocation);
+    public void sendLocationTracker(String url, String token, String tenant, SendLocation sendLocation) {
+        Call<ResponseMessage> messageCall = restClient.sendLocationTracker(token, tenant, sendLocation);
         messageCall.enqueue(new Callback<ResponseMessage>() {
             @Override
             public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {

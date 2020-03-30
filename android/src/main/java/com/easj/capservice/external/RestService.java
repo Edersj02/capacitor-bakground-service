@@ -15,6 +15,7 @@ public interface RestService {
     @POST("./")
     Call<ResponseMessage> sendLocationTracker(
             @Header("Authorization") String authorization,
+            @Header("Tenant") String tenant,
             @Body SendLocation sendLocation
             );
 
