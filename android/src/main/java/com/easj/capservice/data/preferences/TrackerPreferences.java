@@ -84,21 +84,20 @@ public class TrackerPreferences implements ITrackerPreferences {
     }
 
     @Override
-    public void setTripsIds(JSONArray tripsIds) {
+    public void setTripsIds(String tripsIds) {
         if (tripsIds != null) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(TRIPS_IDS, tripsIds.toString());
+            editor.putString(TRIPS_IDS, tripsIds);
             editor.apply();
         }
     }
 
     @Override
-    public JSONArray getTripsIds() throws JSONException {
+    public String getTripsIds(){
         if (!Objects.equals(preferences.getString(TRIPS_IDS, ""), "")) {
-            return new JSONArray(preferences.getString(TRIPS_IDS, ""));
-        } else {
-            return new JSONArray();
+            return preferences.getString(TRIPS_IDS, "");
         }
+        return "";
     }
 
     @Override

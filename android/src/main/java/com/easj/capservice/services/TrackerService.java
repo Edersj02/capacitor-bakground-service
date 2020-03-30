@@ -207,12 +207,17 @@ public class TrackerService extends Service {
                     if (location != null) {
                         ArrayList<Integer> tripsIds = new ArrayList<>();
                         preferences = TrackerPreferences.getInstance(getApplicationContext());
+                        Log.d(SERVICE_NAME, "Init TripId Size: " + tripsIds.size());
                         if (preferences.getTripsIds() != null) {
-                            JSONArray array = preferences.getTripsIds();
-                            for (int i=0; i<array.length(); i++) {
-                                tripsIds.add(Integer.parseInt(array.get(i).toString()));
+                            Log.d(SERVICE_NAME, "TripIds: " + preferences.getTripsIds());
+                            JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
+                            Log.d(SERVICE_NAME, "jsonArray: " + jsonArray.toString());
+                            for(int i = 0; i < jsonArray.length(); i++) {
+                                tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
                             }
+                            Log.d(SERVICE_NAME, "TripId Size: " + tripsIds.size());
                         }
+                        Log.d(SERVICE_NAME, "End TripId Size: " + tripsIds.size());
                         Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                         if (!sessionData.getToken().equals("")) {
                             sendLocation = new SendLocation();

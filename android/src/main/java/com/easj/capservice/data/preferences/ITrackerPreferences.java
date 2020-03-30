@@ -14,9 +14,9 @@ public interface ITrackerPreferences {
 
     JSONObject getDriverStatus() throws JSONException;
 
-    void setTripsIds(JSONArray tripsIds);
+    void setTripsIds(String tripsIds);
 
-    JSONArray getTripsIds() throws JSONException;
+    String getTripsIds();
 
     void clearData();
 
