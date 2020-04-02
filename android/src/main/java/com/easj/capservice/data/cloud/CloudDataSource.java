@@ -75,4 +75,27 @@ public class CloudDataSource implements ICloudDataSource {
         });
     }
 
+    @Override
+    public void sendLocationTrackerSignalR(String url, String token, String tenant, SendLocation sendLocation) {
+        Call<ResponseMessage> messageCall = restClient.sendLocationTrackerSignalR(token, tenant, sendLocation);
+        messageCall.enqueue(new Callback<ResponseMessage>() {
+            @Override
+            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+                if (response.isSuccessful()) {
+                    Log.d(CLASS_NAME, "Response: " + response.message());
+                    return;
+                }
+                ResponseBody errorBody = response.errorBody();
+                if (errorBody.contentType().subtype().equals("json")) {
+                    ErrorResponse errorResponse = ErrorResponse.fromErrorBody(errorBody);
+                    Log.d(CLASS_NAME, "Error body: " + errorResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                Log.d(CLASS_NAME, "Error failure: " + t.getMessage());
+            }
+        });
+    }
 }

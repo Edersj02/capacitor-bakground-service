@@ -35,6 +35,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,8 +60,9 @@ public class TrackerService extends Service {
     private boolean swToast = false;
 
     public Socket mSocket;
+
     {
-        try{
+        try {
             mSocket = IO.socket("https://trackingnode.herokuapp.com/");
         } catch (URISyntaxException e) {
             Log.d(SERVICE_NAME, "Error socket: " + e.getMessage());
@@ -105,7 +107,7 @@ public class TrackerService extends Service {
         Log.d(SERVICE_NAME, "Service -----");
         try {
             if (intent != null) {
-                if (intent.getAction().equals(Constans.START_FOREGROUND_ACTION)) {
+                if (Objects.equals(intent.getAction(), Constans.START_FOREGROUND_ACTION)) {
                     Log.d(SERVICE_NAME, "Service ----- START_FOREGROUND_ACTION");
                     if (intent.getExtras() != null) {
                         Bundle bundle = intent.getExtras();
@@ -142,6 +144,14 @@ public class TrackerService extends Service {
                                     } else {
                                         mSocket.connected();
                                     }
+                                    //
+                                    sendLocation = new SendLocation();
+                                    sendLocation.setDriverId(sessionData.getDriverId());
+                                    sendLocation.setLatitude(location.getLatitude());
+                                    sendLocation.setLongitude(location.getLongitude());
+                                    sendLocation.setSpeed(location.getSpeed());
+                                    sessionData.setTripIds(new ArrayList<Integer>());
+                                    dataSource.sendLocationTrackerSignalR("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                                 }
                             }
                         }
@@ -157,7 +167,7 @@ public class TrackerService extends Service {
                 }
             }
         } catch (Exception ex) {
-            Toast.show(this, "Unknown error: "+ex.getMessage());
+            Toast.show(this, "Unknown error: " + ex.getMessage());
         }
         return START_STICKY;
     }
@@ -179,7 +189,7 @@ public class TrackerService extends Service {
         Toast.show(this, "Service in background done");
     }
 
-    private void createChanelIdNotifications(){
+    private void createChanelIdNotifications() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -207,23 +217,18 @@ public class TrackerService extends Service {
                     if (location != null) {
                         ArrayList<Integer> tripsIds = new ArrayList<>();
                         preferences = TrackerPreferences.getInstance(getApplicationContext());
-                        Log.d(SERVICE_NAME, "Init TripId Size: " + tripsIds.size());
                         if (preferences.getTripsIds() != null && (!preferences.getTripsIds().equals(""))) {
-                            Log.d(SERVICE_NAME, "TripIds: " + preferences.getTripsIds());
                             JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
-                            for(int i = 0; i < jsonArray.length(); i++) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
                             }
-                            Log.d(SERVICE_NAME, "TripId Size: " + tripsIds.size());
                         }
-                        Log.d(SERVICE_NAME, "End TripId Size: " + tripsIds.size());
-                        Log.d(SERVICE_NAME, "Token -----" + sessionData.getToken());
                         if (!sessionData.getToken().equals("")) {
-                            sendLocation = new SendLocation();
+                            /* sendLocation = new SendLocation();
                             sendLocation.setDriverId(sessionData.getDriverId());
                             sendLocation.setLatitude(location.getLatitude());
                             sendLocation.setLongitude(location.getLongitude());
-                            sendLocation.setSpeed(location.getSpeed());
+                            sendLocation.setSpeed(location.getSpeed()); */
                             sendLocation.setTripsIds(tripsIds);
                             dataSource.sendLocationTracker("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                         } else {
@@ -240,6 +245,7 @@ public class TrackerService extends Service {
 
     /**
      * enabledMockLocation
+     *
      * @return true if mock location is enabled, false if is not enabled
      */
     private boolean enabledMockLocation(Location location) {

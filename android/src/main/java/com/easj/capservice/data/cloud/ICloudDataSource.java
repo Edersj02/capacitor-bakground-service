@@ -12,4 +12,6 @@ public interface ICloudDataSource {
         void onFailed(String error);
     }
 
+    void sendLocationTrackerSignalR(String url, String token, String tenant, SendLocation sendLocation);
+
 }
