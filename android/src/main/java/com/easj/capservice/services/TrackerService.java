@@ -118,6 +118,13 @@ public class TrackerService extends Service {
                                 //Object[] object = new Object[4];
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
+                                sendLocation = new SendLocation();
+                                sendLocation.setDriverId(sessionData.getDriverId());
+                                sendLocation.setLatitude(location.getLatitude());
+                                sendLocation.setLongitude(location.getLongitude());
+                                sendLocation.setSpeed(location.getSpeed());
+                                sessionData.setTripIds(new ArrayList<Integer>());
+                                dataSource.sendLocationTrackerSignalR("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                                 if ((!sessionData.getToken().equals("")) && sessionData.isSocketActive()) {
                                     JSONObject obj = new JSONObject();
                                     obj.put("id", sessionData.getDriverId());
@@ -144,14 +151,6 @@ public class TrackerService extends Service {
                                     } else {
                                         mSocket.connected();
                                     }
-                                    //
-                                    sendLocation = new SendLocation();
-                                    sendLocation.setDriverId(sessionData.getDriverId());
-                                    sendLocation.setLatitude(location.getLatitude());
-                                    sendLocation.setLongitude(location.getLongitude());
-                                    sendLocation.setSpeed(location.getSpeed());
-                                    sessionData.setTripIds(new ArrayList<Integer>());
-                                    dataSource.sendLocationTrackerSignalR("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                                 }
                             }
                         }
