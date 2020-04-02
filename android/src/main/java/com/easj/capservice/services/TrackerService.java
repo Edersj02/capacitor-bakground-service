@@ -118,12 +118,7 @@ public class TrackerService extends Service {
                                 //Object[] object = new Object[4];
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
-                                sendLocation = new SendLocation();
-                                sendLocation.setDriverId(sessionData.getDriverId());
-                                sendLocation.setLatitude(location.getLatitude());
-                                sendLocation.setLongitude(location.getLongitude());
-                                sendLocation.setSpeed(location.getSpeed());
-                                sessionData.setTripIds(new ArrayList<Integer>());
+                                sendLocation = setSendLocation();
                                 dataSource.sendLocationTrackerSignalR("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                                 if ((!sessionData.getToken().equals("")) && sessionData.isSocketActive()) {
                                     JSONObject obj = new JSONObject();
@@ -214,22 +209,10 @@ public class TrackerService extends Service {
                 Log.d(SERVICE_NAME, "Init timer service locations");
                 try {
                     if (location != null) {
-                        ArrayList<Integer> tripsIds = new ArrayList<>();
-                        preferences = TrackerPreferences.getInstance(getApplicationContext());
-                        if (preferences.getTripsIds() != null && (!preferences.getTripsIds().equals(""))) {
-                            JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
-                            }
-                        }
                         if (!sessionData.getToken().equals("")) {
-                            sendLocation = new SendLocation();
-                            sendLocation.setDriverId(sessionData.getDriverId());
-                            sendLocation.setLatitude(location.getLatitude());
-                            sendLocation.setLongitude(location.getLongitude());
-                            sendLocation.setSpeed(location.getSpeed());
-                            sendLocation.setTripsIds(tripsIds);
-                            dataSource.sendLocationTracker("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
+                            sendLocation = setSendLocation();
+                            dataSource.sendLocationTracker("", sessionData.getToken(), sessionData.getTenant(),
+                                    sendLocation);
                         } else {
                             Log.d(SERVICE_NAME, "No Send Location ----");
                         }
@@ -240,6 +223,24 @@ public class TrackerService extends Service {
             }
         };
         timer.schedule(task, 4000L, 70000L);
+    }
+    
+    private SendLocation setSendLocation() {
+        ArrayList<Integer> tripsIds = new ArrayList<>();
+        preferences = TrackerPreferences.getInstance(getApplicationContext());
+        if (preferences.getTripsIds() != null && (!preferences.getTripsIds().equals(""))) {
+            JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
+            }
+        }
+        SendLocation sendLocation = new SendLocation();
+        sendLocation.setDriverId(sessionData.getDriverId());
+        sendLocation.setLatitude(location.getLatitude());
+        sendLocation.setLongitude(location.getLongitude());
+        sendLocation.setSpeed(location.getSpeed());
+        sendLocation.setTripsIds(tripsIds);
+        return sendLocation;
     }
 
     /**
