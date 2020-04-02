@@ -224,11 +224,11 @@ public class TrackerService extends Service {
                             }
                         }
                         if (!sessionData.getToken().equals("")) {
-                            /* sendLocation = new SendLocation();
+                            sendLocation = new SendLocation();
                             sendLocation.setDriverId(sessionData.getDriverId());
                             sendLocation.setLatitude(location.getLatitude());
                             sendLocation.setLongitude(location.getLongitude());
-                            sendLocation.setSpeed(location.getSpeed()); */
+                            sendLocation.setSpeed(location.getSpeed());
                             sendLocation.setTripsIds(tripsIds);
                             dataSource.sendLocationTracker("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
                         } else {
