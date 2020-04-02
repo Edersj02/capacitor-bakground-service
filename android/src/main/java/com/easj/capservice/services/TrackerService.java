@@ -228,13 +228,17 @@ public class TrackerService extends Service {
         timer.schedule(task, 4000L, 70000L);
     }
     
-    private SendLocation setSendLocation() throws JSONException {
+    private SendLocation setSendLocation() {
         ArrayList<Integer> tripsIds = new ArrayList<>();
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences.getTripsIds() != null && (!preferences.getTripsIds().equals(""))) {
-            JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
-            for (int i = 0; i < jsonArray.length(); i++) {
-                tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
+            try {
+                JSONArray jsonArray = new JSONArray(preferences.getTripsIds());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    tripsIds.add(Integer.parseInt(jsonArray.get(i).toString()));
+                }
+            } catch (JSONException ex) {
+                Log.d(SERVICE_NAME, "Error convert json: " + ex.getMessage());
             }
         }
         SendLocation sendLocation = new SendLocation();
