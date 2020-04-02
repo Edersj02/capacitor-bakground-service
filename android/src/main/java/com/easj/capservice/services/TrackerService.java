@@ -30,6 +30,7 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -225,7 +226,7 @@ public class TrackerService extends Service {
         timer.schedule(task, 4000L, 70000L);
     }
     
-    private SendLocation setSendLocation() {
+    private SendLocation setSendLocation() throws JSONException {
         ArrayList<Integer> tripsIds = new ArrayList<>();
         preferences = TrackerPreferences.getInstance(getApplicationContext());
         if (preferences.getTripsIds() != null && (!preferences.getTripsIds().equals(""))) {
