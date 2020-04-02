@@ -120,32 +120,34 @@ public class TrackerService extends Service {
                                 preferences = TrackerPreferences.getInstance(getApplicationContext());
                                 sessionData = preferences.getSessionData();
                                 sendLocation = setSendLocation();
-                                dataSource.sendLocationTrackerSignalR("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
-                                if ((!sessionData.getToken().equals("")) && sessionData.isSocketActive()) {
-                                    JSONObject obj = new JSONObject();
-                                    obj.put("id", sessionData.getDriverId());
-                                    obj.put("lat", location.getLatitude());
-                                    obj.put("lng", location.getLongitude());
-                                    obj.put("speed", location.getSpeed());
-                                    obj.put("accuracy", location.getAccuracy());
-                                    obj.put("bearing", location.getBearing());
-                                    obj.put("altitude", location.getAltitude());
-                                    obj.put("time", location.getTime());
-                                    JSONObject data = new JSONObject();
-                                    Date dateTime = new Date();
-                                    data.put("driverid", sessionData.getDriverId());
-                                    data.put("name", sessionData.getDriverName());
-                                    data.put("vehicle", sessionData.getPin());
-                                    data.put("dateTime", dateTime);
-                                    data.put("driverstatus", preferences.getDriverStatus());
-                                    obj.put("data", data);
-                                    if (mSocket.connected()) {
-                                        Log.d(SERVICE_NAME, obj.toString());
-                                        mSocket.emit("newLocation", obj);
-                                        swToast = true;
-                                        Log.d(SERVICE_NAME, "Send Location Socket");
-                                    } else {
-                                        mSocket.connected();
+                                if (!sessionData.getToken().equals("")) {
+                                    dataSource.sendLocationTrackerSignalR("", sessionData.getToken(), sessionData.getTenant(), sendLocation);
+                                    if (sessionData.isSocketActive()) {
+                                        JSONObject obj = new JSONObject();
+                                        obj.put("id", sessionData.getDriverId());
+                                        obj.put("lat", location.getLatitude());
+                                        obj.put("lng", location.getLongitude());
+                                        obj.put("speed", location.getSpeed());
+                                        obj.put("accuracy", location.getAccuracy());
+                                        obj.put("bearing", location.getBearing());
+                                        obj.put("altitude", location.getAltitude());
+                                        obj.put("time", location.getTime());
+                                        JSONObject data = new JSONObject();
+                                        Date dateTime = new Date();
+                                        data.put("driverid", sessionData.getDriverId());
+                                        data.put("name", sessionData.getDriverName());
+                                        data.put("vehicle", sessionData.getPin());
+                                        data.put("dateTime", dateTime);
+                                        data.put("driverstatus", preferences.getDriverStatus());
+                                        obj.put("data", data);
+                                        if (mSocket.connected()) {
+                                            Log.d(SERVICE_NAME, obj.toString());
+                                            mSocket.emit("newLocation", obj);
+                                            swToast = true;
+                                            Log.d(SERVICE_NAME, "Send Location Socket");
+                                        } else {
+                                            mSocket.connected();
+                                        }
                                     }
                                 }
                             }
