@@ -14,6 +14,8 @@ public class SendLocation {
     Double Longitude;
     @SerializedName("speed")
     float Speed;
+    @SerializedName("bearing")
+    float Bearing;
     @SerializedName("tripsids")
     ArrayList<Integer> tripsIds;
 
@@ -51,6 +53,14 @@ public class SendLocation {
 
     public void setSpeed(float speed) {
         Speed = speed;
+    }
+
+    public float getBearing() {
+        return Bearing;
+    }
+
+    public void setBearing(float bearing) {
+        Bearing = bearing;
     }
 
     public ArrayList<Integer> getTripsIds() {
