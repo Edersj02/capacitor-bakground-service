@@ -247,7 +247,9 @@ public class TrackerService extends Service {
         sendLocation.setLongitude(location.getLongitude());
         sendLocation.setSpeed(location.getSpeed());
         sendLocation.setBearing(location.getBearing());
-        sendLocation.setVehicle(sessionData.getPin());
+        if (sessionData.getPin() != 0) {
+            sendLocation.setVehicle(sessionData.getPin());
+        }
         sendLocation.setTripsIds(tripsIds);
         return sendLocation;
     }
