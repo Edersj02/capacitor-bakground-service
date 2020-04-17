@@ -17,7 +17,7 @@ public class SendLocation {
     @SerializedName("bearing")
     float Bearing;
     @SerializedName("vehicle")
-    int Vehicle;
+    Integer Vehicle;
     @SerializedName("tripsids")
     ArrayList<Integer> tripsIds;
 
@@ -69,7 +69,7 @@ public class SendLocation {
         return Vehicle;
     }
 
-    public void setVehicle(int vehicle) {
+    public void setVehicle(Integer vehicle) {
         Vehicle = vehicle;
     }
 
